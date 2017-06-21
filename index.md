@@ -1,125 +1,44 @@
 ---
 layout: default
+title: Now I'm doing What I Love
 ---
-Hello.
-My Name is **DuHwan**.
+# DUHWAN JANG
+I'm software engineer. I love my work.
+I'm dreaming software craftsmanship.
+I'm believe that We will could change the world.
+We solve the problem in this country.
+if you believe that pleeeeease contact to me.
 
-Text can be **bold**, _italic_, or ~~strikethrough~~.
-
-[Link to another page](another-page).
-
-There should be whitespace between paragraphs.
-
-There should be whitespace between paragraphs. We recommend including a README, or a file with information about your project.
-
-# [](#header-1)Header 1
-
-This is a normal paragraph following a header. GitHub is a code hosting platform for version control and collaboration. It lets you and others work together on projects from anywhere.
-
-## [](#header-2)Header 2
-
-> This is a blockquote following a header.
->
-> When something is important enough, you do it even if the odds are not in your favor.
-
-### [](#header-3)Header 3
-
-```js
-// Javascript code with syntax highlighting.
-var fun = function lang(l) {
-  dateformat.i18n = require('./lang/' + l)
-  return true;
-}
-```
-
-```ruby
-# Ruby code with syntax highlighting
-GitHubPages::Dependencies.gems.each do |gem, version|
-  s.add_dependency(gem, "= #{version}")
-end
-```
-
-#### [](#header-4)Header 4
-
-*   This is an unordered list following a header.
-*   This is an unordered list following a header.
-*   This is an unordered list following a header.
-
-##### [](#header-5)Header 5
-
-1.  This is an ordered list following a header.
-2.  This is an ordered list following a header.
-3.  This is an ordered list following a header.
-
-###### [](#header-6)Header 6
-
-| head1        | head two          | three |
-|:-------------|:------------------|:------|
-| ok           | good swedish fish | nice  |
-| out of stock | good and plenty   | nice  |
-| ok           | good `oreos`      | hmm   |
-| ok           | good `zoute` drop | yumm  |
-
-### There's a horizontal rule below this.
-
+### PERSONAL INFORMATION
 * * *
-
-### Here is an unordered list:
-
-*   Item foo
-*   Item bar
-*   Item baz
-*   Item zip
-
-### And an ordered list:
-
-1.  Item one
-1.  Item two
-1.  Item three
-1.  Item four
-
-### And a nested list:
-
-- level 1 item
-  - level 2 item
-  - level 2 item
-    - level 3 item
-    - level 3 item
-- level 1 item
-  - level 2 item
-  - level 2 item
-  - level 2 item
-- level 1 item
-  - level 2 item
-  - level 2 item
-- level 1 item
-
-### Small image
-
-![](https://assets-cdn.github.com/images/icons/emoji/octocat.png)
-
-### Large image
-
-![](https://guides.github.com/activities/hello-world/branching.png)
-
-
-### Definition lists can be used with HTML syntax.
-
 <dl>
 <dt>Name</dt>
-<dd>Godzilla</dd>
+<dd>DuHwan Jang</dd>
 <dt>Born</dt>
-<dd>1952</dd>
+<dd>7/5/1986</dd>
 <dt>Birthplace</dt>
-<dd>Japan</dd>
-<dt>Color</dt>
-<dd>Green</dd>
+<dd>Deagu (Now I'm in Kimpo)</dd>
+<dt>Manifesto</dt>
+<dd>Software Craftsmanship</dd>
 </dl>
 
-```
-Long, single-line code blocks should not wrap. They should horizontally scroll if they are too long. This line should be long enough to demonstrate this.
-```
+>동작하는 소프트웨어 뿐만 아니라, **정교하고 솜씨있게 만들어진 작품을**
 
-```
-The final element.
-```
+>변화에 대응하는 것뿐만 아니라, **계속해서 가치를 더하는 것을**
+
+>개별적으로 협력하는 것뿐만 아니라, **프로페셔널 커뮤니티를 조정하는 것을**
+
+>고객과 협업하는 것뿐만 아니라, **생산적인 동반자 관계를**
+
+
+### CONTACT INFORMATION
+* * *
+<dl>
+<dt>Mobile</dt>
+<dd>010-2524-9037</dd>
+<dt>Email</dt>
+<dd>e.where.people.enjoy@gmail.com </dd>
+<dt>Blog</dt>
+<dd>https://thinkallofyours.github.io(here)</dd>
+<dd>http://dontstopthinking.tistory.com</dd>
+</dl>
