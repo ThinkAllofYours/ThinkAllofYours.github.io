@@ -1,6 +1,8 @@
 ---
 layout: default
 ---
+Hello.
+My Name is **DuHwan**.
 
 Text can be **bold**, _italic_, or ~~strikethrough~~.
 
