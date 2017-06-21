@@ -1,15 +1,15 @@
 theme: jekyll-theme-cayman
 
 # Setup
-title:        Project or Site name
-tagline:      A responsive theme for your project on GitHub Pages
-baseurl:      ""
+title:        DuHwan Jang's Portpolio
+tagline:      portpolio
+baseurl:      "https://thinkallofyours.github.io"
 paginate:     1
 
 # About/contact
-author:
-  name:       Author name
-  url:        http://yourhomepage.com
+author:       Duhwan Jang
+  name:       LandR
+  url:        https://thinkallofyours.github.io
 
 # Gems
 gems:
