@@ -71,25 +71,25 @@ if you believe that pleeeeease contact to me.
 ### TECHNICAL SKILL
 * * *
 #### Programming Language
-```
-가장 많이 사용한 : JAVA, C#
-최근 관심 가지게된 : Kotiln, Python 
-몇번 경험해본 : JavaScript(Node.js), Ruby
-공부해보고 싶은 : Scala, Haskell, Type Script
-```
-#### Frame Work
-```
-가장 많이 사용한 : Android, Winform(.NET 4.0)
-최근 관심 가지게된 : Kotiln(Android), Django 
-몇번 경험해본 : Spring, Ionic
-공부해보고 싶은 : Scala, Haskell, Type Script
-```
 
-#### IDE
-```
-가장 많이 사용한 : ANDROID STUDIO, VISUAL STUDIO
-최근 관심 가지게된 : Intelli J, VS CODE
-몇번 경험해본 : Eclipse, ATOM
-```
+* JAVA, C# - _가장 많이 사용_
+* Kotiln, Python - _최근 많은 관심_ 
+* JavaScript(Node.js), Ruby - _접해본적 있음_
+*  Scala, Haskell, Type Script - _공부해보고 싶음_
 
+#### Framework
+* Android, Winform(.NET 4.0)  - _가장 많이 사용한_ 
+* Kotiln(Android), Django - _최근 많은 관심_ 
+* Spring, Ionic, Node.js - _접해본적 있음_
+* Scala, Haskell, Type Script - _접해본적 있음_
 
+#### OS
+* Windows, Mac
+
+#### DataBase
+* MSSQL, ORACLE
+
+#### Others
+* Git, TeamFoundation
+* Docker(Node.js), AWS
+* TDD(Test Driven Development)
