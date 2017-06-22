@@ -44,7 +44,7 @@ if you believe that pleeeeease contact to me.
 <dd>http://dontstopthinking.tistory.com</dd>
 </dl>
 
-### OBJECTIVE WORK
+### Purpose Drive Delopment
 * * *
 
 #### [](#header-4)Anything I can do.
@@ -78,10 +78,10 @@ if you believe that pleeeeease contact to me.
 *  Scala, Haskell, Type Script - _공부해보고 싶음_
 
 #### Framework
-* Android, Winform(.NET 4.0)  - _가장 많이 사용한_ 
+* Android, Winform(.NET 4.0)  - _가장 많이 사용_ 
 * Kotiln(Android), Django - _최근 많은 관심_ 
 * Spring, Ionic, Node.js - _접해본적 있음_
-* Scala, Haskell, Type Script - _접해본적 있음_
+* Scala, Haskell, Type Script - _공부해보고 싶음_
 
 #### OS
 * Windows, Mac
@@ -93,3 +93,4 @@ if you believe that pleeeeease contact to me.
 * Git, TeamFoundation
 * Docker(Node.js), AWS
 * TDD(Test Driven Development)
+
