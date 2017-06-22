@@ -40,7 +40,7 @@ if you believe that pleeeeease contact to me.
 <dt>Email</dt>
 <dd>e.where.people.enjoy@gmail.com </dd>
 <dt>Blog</dt>
-<dd>https://thinkallofyours.github.io(here)</dd>
+<dd>https://thinkallofyours.github.io</dd>
 <dd>http://dontstopthinking.tistory.com</dd>
 </dl>
 
