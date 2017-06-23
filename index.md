@@ -8,8 +8,9 @@ title: Now I'm doing What I Love
 I'm software engineer. I love my work.
 I'm dreaming software craftsmanship.
 I'm believe that We will could change the world.
-We solve the problem in this country.
-if you believe that pleeeeease contact to me.
+We could solve the problem in the world.
+If you believe that please contact to me.
+I want to go with you.
 
 ### PERSONAL INFORMATION
 * * *
@@ -56,7 +57,7 @@ if you believe that pleeeeease contact to me.
 
 #### [](#header-4)More More More Study
 ```
-學而時習之 不亦說乎
+學而時習之 不亦說乎
 평생 배울 무언가가 있다는 것은 즐거운 일입니다.
 프로그래밍에 대해 더 많은 것을 알고 배우고 싶습니다.
 ```
@@ -68,7 +69,7 @@ if you believe that pleeeeease contact to me.
 가장 강력하고 확실한 방법은 프로그래밍이라고 생각합니다.
 ```
 
-### TECHNICAL SKILL
+### What I Do
 * * *
 #### Programming Language
 
