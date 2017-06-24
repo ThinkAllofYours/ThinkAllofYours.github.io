@@ -1,6 +1,8 @@
 ---
 layout: default
 title: Now I'm doing What I Love
+name:DUHWAN JANG's Portfolio
+tag:blog & portfolio
 ---
 # DUHWAN JANG
 >Programming is **如切如磋 如琢如磨**
@@ -94,4 +96,4 @@ I want to go with you.
 * Git, TeamFoundation
 * Docker(Node.js), AWS
 * TDD(Test Driven Development)
-
+* Coding Convention(pep8)
