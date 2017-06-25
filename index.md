@@ -1,8 +1,8 @@
 ---
 layout: default
 title: Now I'm doing What I Love
-name:DUHWAN JANG's Portfolio
-tag:blog & portfolio
+project-name: DUHWAN JANG's Portfolio
+tag: project-tagline
 ---
 # DUHWAN JANG
 >Programming is **如切如磋 如琢如磨**
