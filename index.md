@@ -6,11 +6,11 @@ title: Now I'm doing What I Love
 >Programming is **如切如磋 如琢如磨**
 
 I'm software engineer. I love my work.
-I'm dreaming software craftsmanship.
-I'm believe that We will could change the world.
+I'm doing software craftsmanship.
+I'm believe that We could change the world,
 We could solve the problem in the world.
 If you believe that please contact to me.
-I want to go with you.
+I want to work with you.
 
 ### PERSONAL INFORMATION
 * * *
@@ -100,6 +100,7 @@ I want to go with you.
 * Android, Winform(.NET 4.0)  - _가장 많이 사용_ 
 * Kotiln(Android), Django - _최근 많은 관심_ 
 * Spring, Ionic, Node.js - _접해본적 있음_
+* Machine Learning - _공부해보고 싶음_
 
 #### OS
 * Windows, Mac
