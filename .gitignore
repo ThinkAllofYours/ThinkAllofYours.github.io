@@ -48,7 +48,7 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
-_site
-.sass-cache
-Gemfile.lock
 *.gem
+_site/
+.sass-cache/
+.jekyll-metadata

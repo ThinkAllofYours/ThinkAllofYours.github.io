@@ -20,7 +20,9 @@ I want to go with you.
 <dt>Born</dt>
 <dd>7/5/1986</dd>
 <dt>Birthplace</dt>
-<dd>Deagu (Now I'm in Kimpo)</dd>
+<dd>Korea</dd>
+<dt>Language</dt>
+<dd>Korean, English</dd>
 <dt>Manifesto</dt>
 <dd>Software Craftsmanship</dd>
 </dl>
@@ -55,19 +57,28 @@ I want to go with you.
 프로그래밍은 이제까지 한 일들중에 가장 즐거운 일입니다. 
 ```
 
-#### [](#header-4)More More More Study
+#### [](#header-4)Make the World Better
 ```
-學而時習之 不亦說乎
-평생 배울 무언가가 있다는 것은 즐거운 일입니다.
-프로그래밍에 대해 더 많은 것을 알고 배우고 싶습니다.
-```
-
-#### [](#header-4)Can Change the World
-```
-사람들의 삶의 양식을 변화시키고 
-세상에 영향력을 행사하고 싶습니다.
+사람들의 삶의 양식을 변화시키고
+세상을 조금 더 좋게 만들고 싶습니다
 가장 강력하고 확실한 방법은 프로그래밍이라고 생각합니다.
 ```
+
+#### [](#header-4)Definite Performance.
+```
+코드와 관련된 일이 아니라도 프로젝트의 성공을 전적으로 돕습니다
+혼자 사업을 기획부터 개발까지 수행한 사업이 2017년을 기준으로 총 5억원 입니다
+사용한 언어는 C#, JAVA, ANDROID까지 다양합니다.
+필요하면 빠르게 학습하고 주어진 목표를 달성합니다
+```
+
+#### [](#header-4)Knowledge sharing
+```
+서로를 더 성장시킬 만한 사람들과 함께 일하길 원합니다
+사내에서 알고리즘, 자료구조, 디자인 패턴 관련한 스터디 그룹을 만들었습니다
+덕분에 개발소스코드의 품질이 올라가고 활발한 커뮤니케이션으로 프로젝트를 원활하게 수행했습니다
+```
+
 
 ### What I Do
 * * *
