@@ -41,30 +41,37 @@ I want to go with you.
 <dt>Mobile</dt>
 <dd>010-2524-9037</dd>
 <dt>Email</dt>
-<dd>e.where.people.enjoy@gmail.com </dd>
-<dt>Blog</dt>
-<dd>https://thinkallofyours.github.io</dd>
-<dd>http://dontstopthinking.tistory.com</dd>
+<dd>e.where.people.enjoy@gmail.com</dd>
+<dt>SNS</dt>
+<dd>Kakao talk ID : Soondingee</dd>
+<dd>Facebook : e.where.people.enjoy@gmail.com </dd>
 </dl>
+
+<dl><dt>Blog</dt></dl>
+
+ [Github Blog & Portfolio](https://thinkallofyours.github.io).
+
+ [티스토리 블로그](http://dontstopthinking.tistory.com).
+
 
 ### Purpose Drive Delopment
 * * *
 
-#### [](#header-4)Anything I can do.
+##### [](#header-4)Anything I can do.
 ```
 빠른 반응과 내가 생각한대로 작동하는 무언가를 보는것
 많은 사람들에게 강한 영향력을 끼칠 수 있다는 것
 프로그래밍은 이제까지 한 일들중에 가장 즐거운 일입니다. 
 ```
 
-#### [](#header-4)Make the World Better
+##### [](#header-4)Make the World Better
 ```
 사람들의 삶의 양식을 변화시키고
 세상을 조금 더 좋게 만들고 싶습니다
 가장 강력하고 확실한 방법은 프로그래밍이라고 생각합니다.
 ```
 
-#### [](#header-4)Definite Performance.
+##### [](#header-4)Definite Performance.
 ```
 코드와 관련된 일이 아니라도 프로젝트의 성공을 전적으로 돕습니다
 혼자 사업을 기획부터 개발까지 수행한 사업이 2017년을 기준으로 총 5억원 입니다
@@ -72,7 +79,7 @@ I want to go with you.
 필요하면 빠르게 학습하고 주어진 목표를 달성합니다
 ```
 
-#### [](#header-4)Knowledge sharing
+##### [](#header-4)Knowledge sharing
 ```
 서로를 더 성장시킬 만한 사람들과 함께 일하길 원합니다
 사내에서 알고리즘, 자료구조, 디자인 패턴 관련한 스터디 그룹을 만들었습니다
@@ -87,13 +94,12 @@ I want to go with you.
 * JAVA, C# - _가장 많이 사용_
 * Kotiln, Python - _최근 많은 관심_ 
 * JavaScript(Node.js), Ruby - _접해본적 있음_
-*  Scala, Haskell, Type Script - _공부해보고 싶음_
+* Scala, Haskell, Type Script - _공부해보고 싶음_
 
 #### Framework
 * Android, Winform(.NET 4.0)  - _가장 많이 사용_ 
 * Kotiln(Android), Django - _최근 많은 관심_ 
 * Spring, Ionic, Node.js - _접해본적 있음_
-* Scala, Haskell, Type Script - _공부해보고 싶음_
 
 #### OS
 * Windows, Mac
@@ -106,3 +112,4 @@ I want to go with you.
 * Docker(Node.js), AWS
 * TDD(Test Driven Development)
 * Coding Convention(pep8)
+
