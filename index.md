@@ -115,13 +115,23 @@ I want to work with you.
 * TDD(Test Driven Development)
 * Coding Convention(pep8)
 
+## Education Qualification
+* * *
+
+<dl>
+<dt>KNU(경북대학교) - 2005. 03 ~ 2009. 02</dt>
+<dd>Landscape Architect</dd>
+<dt>Global Human Resource Development Institute - 2014. 01 ~ 2014. 08</dt>
+<dd>사물인터넷(IOT)기반 응용소프트웨어 제작</dd>
+</dl>
+
 
 ## Personal Projects
 * * *
 
 #### I feel connect with you (연결)
 * Content : This App to vote for a favorite person after a meeting.
-* Skill : Python, Django, sql_lite
+* Skill : Python, Django, Sqlite3
 * URL : [연결 - Connet Web site](http://landr.pythonanywhere.com).
 * Github Source : [Git hub source](https://github.com/ThinkAllofYours/ilikeu.git)
 * Screen Shot
