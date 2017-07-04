@@ -54,7 +54,7 @@ I want to work with you.
  [티스토리 블로그](http://dontstopthinking.tistory.com).
 
 
-## Purpose Drive Delopment
+## Purpose Drive Development
 * * *
 
 #### [](#header-4)Anything I can do.
