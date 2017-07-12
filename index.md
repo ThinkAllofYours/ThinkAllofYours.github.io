@@ -93,13 +93,13 @@ I want to work with you.
 #### Programming Language
 
 * JAVA, C# - _가장 많이 사용_
-* Kotiln, Python - _최근 많은 관심_ 
+* Kotiln, Python, Type Script - _사용해 보려 노력_
 * JavaScript(Node.js), Ruby - _접해본적 있음_
-* Scala, Haskell, Type Script - _공부해보고 싶음_
+* Scala, Haskell- _공부해보고 싶음_
 
 #### Framework
 * Android, Winform(.NET 4.0)  - _가장 많이 사용_ 
-* Kotiln(Android), Django - _최근 많은 관심_ 
+* Kotiln(Android), Django - _용해 보려 노력_
 * Spring, Ionic, Node.js - _접해본적 있음_
 * Machine Learning - _공부해보고 싶음_
 
@@ -129,7 +129,7 @@ I want to work with you.
 ## Personal Projects
 * * *
 
-#### I feel connect with you (연결)
+#### I feel connect with you (연결) - 현재운영중
 * Content : This App to vote for a favorite person after a meeting.
 * Skill : Python, Django, Sqlite3
 * URL : [연결 - Connet Web site](http://landr.pythonanywhere.com).
@@ -141,7 +141,7 @@ I want to work with you.
 ## Company Projects
 * * *
 
-#### 영진글로지텍 솔루션 사업부 - 2014. 11 ~ 2017. 07(현재)
+#### 영진글로지텍 솔루션 사업부 - 2014. 11 ~ 2017. 07
 
 ##### 구매조건부(해양환경 모니터링) - 2016. 11 ~ 2018. 10
     - Content : 육지에서 1km 이상 떨어진 전기가 공급되지 않는 양식장의 수온과 용존산소량을 측정하고 데이터를 휴대폰이나 웹으로 볼 수 있는 시스템, 부표에 센서 장비와 태양광을 설치하여 센서 데이터 실시간 전송.
