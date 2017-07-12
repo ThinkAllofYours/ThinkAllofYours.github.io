@@ -99,7 +99,7 @@ I want to work with you.
 
 #### Framework
 * Android, Winform(.NET 4.0)  - _가장 많이 사용_ 
-* Kotiln(Android), Django - _용해 보려 노력_
+* Kotiln(Android), Django - _사용해 보려 노력_
 * Spring, Ionic, Node.js - _접해본적 있음_
 * Machine Learning - _공부해보고 싶음_
 
