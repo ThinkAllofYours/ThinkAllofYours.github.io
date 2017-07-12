@@ -93,13 +93,13 @@ I want to work with you.
 #### Programming Language
 
 * JAVA, C# - _가장 많이 사용_
-* Kotiln, Python, Type Script - _사용해 보려 노력_
+* Kotiln, Python, Type Script - _학습중_
 * JavaScript(Node.js), Ruby - _접해본적 있음_
 * Scala, Haskell- _공부해보고 싶음_
 
 #### Framework
 * Android, Winform(.NET 4.0)  - _가장 많이 사용_ 
-* Kotiln(Android), Django - _사용해 보려 노력_
+* Kotiln(Android), Django - _학습중_
 * Spring, Ionic, Node.js - _접해본적 있음_
 * Machine Learning - _공부해보고 싶음_
 
