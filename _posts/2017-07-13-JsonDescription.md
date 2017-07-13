@@ -160,7 +160,7 @@ namespace Finda
 
 * If you check 'Generate with data examples' you can see Description with examples
 
-![JSON SAMPLE 2]({{ site.url }}/images/Snapshot_02.png)
+![JSON SAMPLE 2](/../images/Snapshot_02.png)
 
 * Input Json
 
