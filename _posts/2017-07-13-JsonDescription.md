@@ -1,7 +1,8 @@
 ---
 layout: default
-title: Description Json Project
+title: Json Description Project
 ---
+## Finda Assignment & DuHwan's Submit
 
 ### Assignment
 
@@ -261,7 +262,7 @@ module Finda {
 |8  | ICodeWriter.cs                | JsonClassGenerator를 통해 만들어진 정보를 C#, Typescript로 변환하기 위한 각정 변수들이 선언되어 있는 인터페이스 |
 |9  | CSharpCodeWriterToText.cs     | ICodeWriter를 구현 JsonClassGenerator를 통해 만들어진 정보를 C# Class 형태로 변환하여 변환된 정보를 String값으로 반환 |
 |10 | TypescriptCodeWriterToText.cs | ICodeWriter를 구현 JsonClassGenerator를 통해 만들어진 정보를 Typescript Interface 형태로 변환하여 변환된 정보를 String 값으로 반환 |
-|11 | GeneratorDescription.cs       | Class형태로 전환된 정보를 String으로 TypescriptCodeWriterToText.cs, CSharpCodeWriterToText.cs를 활용하여 String 값으로 변환 |
+|11 | GeneratorDescription.cs       | Class형태로 전환된 정보를 TypescriptCodeWriterToText.cs, CSharpCodeWriterToText.cs를 활용하여 String 값으로 변환 |
 
 
 #### Describe Code
