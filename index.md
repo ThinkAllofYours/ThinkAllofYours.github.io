@@ -2,13 +2,6 @@
 layout: default
 title: Now I'm doing What I Love
 ---
-<!-- <section class="page-header">
-  <a href="https://github.com/jasonlong/cayman-theme" class="btn">View on GitHub</a>
-  <a href="https://github.com/jasonlong/cayman-theme/zipball/master" class="btn">Download .zip</a>
-  <a href="https://github.com/jasonlong/cayman-theme/tarball/master" class="btn">Download .tar.gz</a>
-  <button class="btn">it works?</button>
-</section> -->
-
 # DUHWAN JANG
 >Programming is **如切如磋 如琢如磨**
 
@@ -55,8 +48,6 @@ I want to work with you.
 </dl>
 
 <dl><dt>Blog</dt></dl>
-
- [Github Blog & Portfolio](https://thinkallofyours.github.io).
 
  [티스토리 블로그](http://dontstopthinking.tistory.com).
 
