@@ -90,26 +90,25 @@ I want to work with you.
 
 #### Programming Language
 
-* JAVA, C# - _가장 많이 사용_
-* Kotiln, Python, Type Script - _학습중_
-* JavaScript(Node.js), Ruby - _접해본적 있음_
-* Scala, Haskell- _공부해보고 싶음_
+* C# - _가장 많이 사용_
+* Javascript - _최근 많이 사용_
 
 #### Framework
-* Android, Winform(.NET 4.0)  - _가장 많이 사용_ 
-* Kotiln(Android), Django - _학습중_
-* Spring, Ionic, Node.js - _접해본적 있음_
-* Machine Learning - _공부해보고 싶음_
+* Winform(.NET 4.0)  - _가장 많이 사용_
+* angular - _최근 많이 사용_
+* Node.js - _최근 많이 사용_
 
 #### OS
-* Windows, Mac
+* Linux(서버 운영으로 최근 사용 중)
 
 #### DataBase
-* MSSQL, ORACLE
+* MongoDB, MSSQL, ORACLE
+
+#### Cloud
+* AWS - 시스템 구조 및 운영 작업 수행
 
 #### Others
 * Git, TeamFoundation
-* Docker, AWS
 * TDD(Test Driven Development)
 * Coding Convention(pep8)
 
@@ -119,18 +118,20 @@ I want to work with you.
 <dl>
 <dt>KNU(경북대학교) - 2005. 03 ~ 2009. 02</dt>
 <dd>Landscape Architect</dd>
-<dt>Global Human Resource Development Institute - 2014. 01 ~ 2014. 08</dt>
-<dd>사물인터넷(IOT)기반 응용소프트웨어 제작</dd>
 </dl>
 
+## Certificate
+* * *
+
+#### 정보처리기사
+* 2016년 5월 취득
 
 ## Personal Projects
 * * *
 
-#### I feel connect with you (연결) - 현재운영중
+#### I feel connect with you (연결)
 * Content : This App to vote for a favorite person after a meeting.
 * Skill : Python, Django, Sqlite3
-* URL : [연결 - Connet Web site](http://landr.pythonanywhere.com).
 * Github Source : [Git hub source](https://github.com/ThinkAllofYours/ilikeu.git)
 * Screen Shot
 
@@ -139,57 +140,13 @@ I want to work with you.
 ## Company Projects
 * * *
 
-#### 영진글로지텍 솔루션 사업부 - 2014. 11 ~ 2017. 07
+#### 테이블매니저 - 2017. 08 ~ 재직중
+    - 직책 : 연구개발팀 매니저
+    - 업무 : C#, WPF, MSSQL을 활용한 솔루션 개발
 
-##### 구매조건부(해양환경 모니터링) - 2016. 11 ~ 2018. 10
-    - Content : 육지에서 1km 이상 떨어진 전기가 공급되지 않는 양식장의 수온과 용존산소량을 측정하고 데이터를 휴대폰이나 웹으로 볼 수 있는 시스템, 부표에 센서 장비와 태양광을 설치하여 센서 데이터 실시간 전송.
-    - Roll : PL(Project Leader), Devops
-    - Skill : C#, WinForm, .Net Framework, Java, Android, Spring, HTML, CSS, Javascript
-
-##### Oyster Farming Management System - 2015. 03 ~ 2017. 06
-    - Content : 굴 박신자(굴을 채취하여 가공하는 공장)에 RFID 기술을 결합하여 작업자들의 생산품과 공정을 전체적으로 관리하는 시스템.
-    - Roll : Devops
-    - Skill : C#, WinForm, .Net Framework, MSSQL
-
-##### 산학연(센서 컨트롤러 및 측정장치 개발) - 2016. 09 ~ 2017. 09
-    - Content : 센서 데이터 측정하고 측정된 데이터를 육상으로 보낼 수 있는 시스템 개발.
-    - Roll : PL(Project Leader)
-    - Skill : C#, WinForm, .Net Framework, Java, Android, Spring, HTML, CSS, Javascript
-
-##### RFID 기반 창고관리 시스템 - 2016. 03 ~ 2017. 05
-    - Content : RFID를 이용한 저장고 입출입 관리 시스템
-    - Roll : PL(Project Leader)
-    - Skill : Java, Android, Spring, C#, WinForm, .Net Framework, MSSQL
-
-##### SW융합(Oyster Manufacturing Execution System) - 2016. 03 ~ 2017. 09
-    - Content : 국내 최대 굴 수출업체를 전체적으로 관리하는 시스템
-    - Roll : Team Manager
-    - Skill : C#, .NET Framework, JAVA, Android, MSSQL, RFID Reader
-
-##### u-IT기반 양식장 통합정보관리시스템 기능개선 사업 - 2016. 05 ~ 2016. 07
-    - Content : 국내 양식장의 통합정보관리 시스템 기능 개선
-    - Roll : PM, Devops
-    - Skill : JAVA, Android, Spring Framework, Cordova, Java Script, HTML, CSS
-
-##### I-oT기반 가두리 수산물 생장/생육 관리시스템 개발 - 2015. 08 ~ 2016. 02
-    - Content : 관리자 시스템 개발
-    - Roll : PL(Project Leader)
-    - Skill : JAVA, Spring Framework, Java Script, HTML, CSS
-
-##### 중소기업 융합R&D현장기획 지원 - 2015. 04 ~ 2016. 08
-    - Content : 첨단 양식장 기획 및 시스템 설계 (기획에 참여)
-    - Roll : Developer
-    - Skill : Word, HWP
-
-##### 어패류 복합양식빌딩 구축을 위한 생장/생육 통합관리 기술개발 - 2014. 11 ~ 2015. 02
-    - Content : 도심 내 빌딩형 복합양식장 R&D 사업 (빌딩형 양식장 생장 생육 관리 시스템 개발)
-    - Roll : Developer
-    - Skill : C#, Winform, MSSQL
-
-##### 스마트기반 굴박신장 생산지원관리 시스템 - 2014. 11 ~ 2015. 08
-    - Content : RFID를 이용한 굴 박신장 생산지원관리 시스템 개발
-    - Roll : Developer
-    - Skill : C#, Winform, MSSQL
+#### 영진글로지텍 - 2014. 11 ~ 2017. 07
+    - 직책 : 솔루션 사업부 팀장
+    - 업무 : C#, WPF, MSSQL을 활용한 솔루션 개발
 
 
 
