@@ -2,11 +2,7 @@
 layout: default
 title: Json Description Project
 ---
-## Finda Assignment & DuHwan's Submit
-
-### Assignment
-
-Using the language of your choice, write a function that takes as input a JSON string representing an array of objects, and returns a description of the data format.  Write one or more new test inputs.  Provide the function, the test inputs, and the corresponding test outputs.
+## Json Description
 
 ##### SAMPLE INPUT
 ```json

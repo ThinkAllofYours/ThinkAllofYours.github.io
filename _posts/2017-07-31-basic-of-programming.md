@@ -53,6 +53,8 @@ title: Basic of Programming
 <br>
 
 ### 지식기반 문제
+- Javascript
+    - [javascript 필수 지식](/2017/08/07/js-essential-knowledge)
 - C와 C++
     - [클래스와 계승]
     - [생성자와 소멸자]
