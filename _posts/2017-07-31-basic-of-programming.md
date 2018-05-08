@@ -5,13 +5,17 @@ title: Basic of Programming
 # 프로그래밍의 기초에 대하여
 >Programming is **如切如磋 如琢如磨**
 
-어떤 사람으로 인해 솔직한 피드백 이후 학원출신의 근본없는? 프로그래머로서 기초공부에 대한 중요성을 다시한번 알게 되었다
-[코딩인터뷰 완전분석](http://www.yes24.com/24/goods/7434347?scode=032&OzSrank=1)에 기초하여
-프로그래밍 기초에 대한 정리를 시작하였으며, 다양한 사이트 및 서적을 참고하여 기초를 정리해나갈 생각이다.
+프로그래밍은 기초가 절망 중요하다. 모든 것은 기초에서 출발해서 확장된다. 많은 사람들에게 기초를 다지는데 도움이 되는 Contents를 만들어
+대한민국 개발이 한단계 업그레이드 되는데 조금이나마 도움이 되고 싶다.
 
 ### 자료구조
 - 배열과 문자열
     - [HashTable (Map, Dictionary ...)]
+        - [javascript]
+        - [java]
+        - [C#]
+        - [python]
+        - [GO]
     - [ArrayList]
     - [StringBuffer]
     - [StringBuilder]

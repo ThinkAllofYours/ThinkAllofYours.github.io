@@ -142,7 +142,7 @@ I want to work with you.
 
 #### 테이블매니저 - 2017. 08 ~ 재직중
     - 직책 : 연구개발팀 매니저
-    - 업무 : C#, WPF, MSSQL을 활용한 솔루션 개발
+    - 업무 : Node.js, javascript, angular, mongodb, aws를 활용한 솔루션 개발
 
 #### 영진글로지텍 - 2014. 11 ~ 2017. 07
     - 직책 : 솔루션 사업부 팀장

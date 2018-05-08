@@ -3,18 +3,23 @@ layout: default
 title: Javascript 함수형 언어의 기초
 ---
 #### SAMPLE Example
+
 >  컬랙션 정렬을 수행하는 자바 명령문
+
 ```java
-Arrays.sort(value, new Comparator<Integer>(){
+Arrays.sort(values, new Comparator<Integer>(){
     public int compare(Integer value1, Integer value2) {
         return value2 - value2;
     }
 });
 ```
+
 > 함수형 접근 방식을 사용한 자바스크립트 코드
+
 ```js
 values.sort(function(value1, value2){ return value2 - value1; });
 ```
+
 #### 자바스크립트의 객체는 다음과 같은 기능적 특징이 있다.
 - 리터럴로 생성될 수 있다.
 - 변수, 배열 엘리먼트, 다른 객체의 프로퍼티에 할당될 수 있다.
