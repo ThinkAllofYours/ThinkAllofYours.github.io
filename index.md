@@ -47,10 +47,6 @@ I want to work with you.
 <dd>Facebook : e.where.people.enjoy@gmail.com </dd>
 </dl>
 
-<dl><dt>Blog</dt></dl>
-
- [티스토리 블로그](http://dontstopthinking.tistory.com).
-
 
 ## Purpose Drive Development
 * * *
@@ -69,12 +65,10 @@ I want to work with you.
 가장 강력하고 확실한 방법은 프로그래밍이라고 생각합니다.
 ```
 
-#### [](#header-4)Definite Performance.
+#### [](#header-4)Performance.
 ```
-코드와 관련된 일이 아니라도 프로젝트의 성공을 전적으로 돕습니다
-혼자 사업을 기획부터 개발까지 수행한 사업이 2017년 기준으로 7억 원입니다
-사용한 언어는 C#, JAVA, ANDROID까지 다양합니다
-필요하면 빠르게 학습하고 주어진 목표를 달성합니다.
+증권거래소(Koscom) 관리회계 2년치 시스템 배부 작업을 10배 빠르게 개선 하였습니다. (16시간 -> 1시간으로 단축) 
+문제를 해결하고 시스템 성능을 향상시키는데 계속 노력합니다. 
 ```
 
 #### [](#header-4)Knowledge sharing
@@ -89,28 +83,27 @@ I want to work with you.
 * * *
 
 #### Programming Language
-
-* C# - _가장 많이 사용_
-* Javascript - _최근 많이 사용_
+* Javascript
+* Spring(Java)
+* C#
 
 #### Framework
-* Winform(.NET 4.0)  - _가장 많이 사용_
-* angular - _최근 많이 사용_
-* Node.js - _최근 많이 사용_
+* Spring - _Web서버_
+* angular - _Web프론트_
+* Express.js - _Node.js기반 서버 라이브러리_
+* Winform(.NET 4.0) 
 
 #### OS
-* Linux(서버 운영으로 최근 사용 중)
+* Linux
 
 #### DataBase
-* MongoDB, MSSQL, ORACLE
+* MongoDB, MSSQL, ORACLE, Tibero
 
 #### Cloud
 * AWS - 시스템 구조 및 운영 작업 수행
 
 #### Others
 * Git, TeamFoundation
-* TDD(Test Driven Development)
-* Coding Convention(pep8)
 
 ## Education Qualification
 * * *
@@ -140,13 +133,17 @@ I want to work with you.
 ## Company Projects
 * * *
 
-#### 테이블매니저 - 2017. 08 ~ 재직중
+#### 도우아이티 - 2018. 10 ~ 2022. 02(현재)
+    - 직책 : 책임연구원
+    - 업무 : 증권거래소 회계시스템 개발 / 운영
+
+#### 테이블매니저 - 2017. 08 ~ 2018. 10
     - 직책 : 연구개발팀 매니저
-    - 업무 : Node.js, javascript, angular, mongodb, aws를 활용한 솔루션 개발
+    - 업무 : 레스토랑 예약 관리 솔루션 개발 
 
 #### 영진글로지텍 - 2014. 11 ~ 2017. 07
     - 직책 : 솔루션 사업부 팀장
-    - 업무 : C#, WPF, MSSQL을 활용한 솔루션 개발
+    - 업무 : 해양 센서 관리 프로그램 개발
 
 
 
