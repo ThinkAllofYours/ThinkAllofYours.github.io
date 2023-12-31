@@ -1,8 +1,12 @@
 ---
-layout: default
-title: Basic of Programming
+layout: posts
+title:  "프로그래밍의 기초에 대하여"
+excerpt: "프로그래밍의 기초에 대하여"
+search: true
+categories:
+- javascript 
+last_modified_at: 2017-07-31T08:06:00-05:00
 ---
-# 프로그래밍의 기초에 대하여
 >Programming is **如切如磋 如琢如磨**
 
 프로그래밍은 기초가 절망 중요하다. 모든 것은 기초에서 출발해서 확장된다. 많은 사람들에게 기초를 다지는데 도움이 되는 Contents를 만들어

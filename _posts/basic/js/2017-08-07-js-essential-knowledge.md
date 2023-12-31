@@ -1,9 +1,12 @@
 ---
-layout: default
-title: javascript-essential-knowledge
+layout: posts
+title:  "Javascript 인터뷰 5가지 필수 지식"
+excerpt:  "Javascript 인터뷰 5가지 필수 지식"
+search: true
+categories:
+- javascript 
+last_modified_at: 2018-08-07T08:06:00-05:00
 ---
-
-# JavaScript Essential Knowledge
 >Programming is **如切如磋 如琢如磨**
 
 ## 5 Typical Javascript

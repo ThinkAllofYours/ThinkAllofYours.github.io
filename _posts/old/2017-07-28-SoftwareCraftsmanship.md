@@ -1,7 +1,12 @@
 ---
-layout: default
+layout: posts
+title:  "SoftwareCraftsmanship"
+excerpt: "SoftwareCraftsmanship"
+search: true
+categories:
+- common 
+last_modified_at: 2017-07-28T08:06:00-05:00
 ---
-## Software-Craftsmanship
 > 저는 소프트웨어 장인을 정신을 따릅니다. 그것은 현재 저의 실력과는 연관이 없습니다.<br>
 > Software-Craftsmanship Manifesto 는 지금 하고 있는 일에 대한 마음가짐을 보여줍니다.
 

@@ -1,0 +1,27 @@
+/* ==========================================================================
+   Default skin
+   ========================================================================== */
+
+/* Colors */
+$background-color: #f7f7f7 !default;  // Light grey background
+$text-color: #333 !default;            // Darker text for contrast
+$muted-text-color: #8e8e93 !default;   // Muted grey for less emphasis
+$primary-color: #007aff !default;      // Apple's typical blue accent color
+$border-color: mix(#fff, #8e8e93, 75%) !default;  // Light grey borders
+$footer-background-color: $primary-color !default;
+$link-color: #007aff !default;         // Blue links, similar to Apple's style
+$masthead-link-color: $text-color !default;
+$masthead-link-color-hover: darken($text-color, 10%) !default;  // Darker on hover
+$navicon-link-color-hover: mix(#fff, $text-color, 80%) !default;
+
+.page__footer {
+  color: #fff !important;  // Keep footer text white for readability
+  background-color: $primary-color;  // Use primary color for footer background
+}
+
+.page__footer-follow .social-icons .svg-inline--fa {
+  color: inherit;  // Inherit color for consistent styling
+  transition: color 0.3s ease;  // Smooth transition for hover effects
+}
+
+// Add any additional styles or overrides as needed

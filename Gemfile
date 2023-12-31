@@ -8,3 +8,4 @@ gem 'github-pages', 228
 gem 'jekyll', '~> 3.9.3'
 gem 'csv'
 gem 'webrick'
+gem "minimal-mistakes-jekyll"
