@@ -36,7 +36,7 @@ toc: true
 - GitHub: https://github.com/ThinkAllofYours
 
 ### Professional Summary
-#### 푸름인재개발원 - 2022.03 - 현재
+#### VAVV((주)푸름인재개발원) - 2022.03 - 현재
 - 직책: 기술개발팀 과장
 - 업무: 레거시 LMS 시스템 유지보수 및 신규 기능 개발, 프로그램 최적화 및 오류 해결, 새로운 LMS 개발.
 - 성과:
@@ -49,7 +49,7 @@ toc: true
 - 기술: Python, PHP (5.1), JavaScript(Next.js), Django, MySQL, Kubernetes, Docker
 
 ---
-#### 도우아이티 - 2018.10 - 2022.02(3년 4개월)
+#### 도우아이티(Koscom) - 2018.10 - 2022.02(3년 4개월)
 - 직책: 책임연구원
 - 업무: Koscom 회계 ERP 유지보수 및 신규 기능 개발, 대용량 데이터 처리 및 회계 문제 대응.
 - 성과:
