@@ -42,6 +42,7 @@ toc: true
 - 성과:
     - Authentik(https://github.com/goauthentik/authentik)을 사용하여 Google ID와 사내 사용자 통합.
     - Kubernetes를 통해 회사 사이트 연결(게시판, 클라우드, 홈페이지등).
+    - 신규서비스 홈페이지 리뉴얼작업 진행 (udacitypartner.com)
     - 신규 LMS 개발(인증평가 진행중)
     - 회사 4배 성장, 매출 100억 달성
     - 개발팀 1명에서 5명으로 확장.
