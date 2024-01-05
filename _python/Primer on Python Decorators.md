@@ -1,5 +1,5 @@
 ---
-layout: posts 
+layout: single
 title: "Python 데코레이터 입문서"
 search: true 
 excerpt: "python에서 가장 많이 사용하는 데코레이터를 파헤쳐 보자"
@@ -8,6 +8,9 @@ categories:
 last_modified_at: 2024-01-03 
 permalink: /python/python-decorator/ 
 toc: true
+toc_label: "Table of Contents"
+toc_icon: "space-shuttle"
+toc_sticky: "true"
 ---
 참고한 사이트 : [realpython.com](https://realpython.com/primer-on-python-decorators/#first-class-objects)
 
