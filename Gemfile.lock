@@ -278,6 +278,7 @@ DEPENDENCIES
   csv
   github-pages (= 228)
   jekyll (~> 3.9.3)
+  jekyll-sitemap
   minimal-mistakes-jekyll
   webrick
 

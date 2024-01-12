@@ -9,3 +9,4 @@ gem 'jekyll', '~> 3.9.3'
 gem 'csv'
 gem 'webrick'
 gem "minimal-mistakes-jekyll"
+gem "jekyll-sitemap"
