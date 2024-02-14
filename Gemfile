@@ -10,3 +10,4 @@ gem 'csv'
 gem 'webrick'
 gem "minimal-mistakes-jekyll"
 gem "jekyll-sitemap"
+gem "nokogiri", ">= 1.16.2"
