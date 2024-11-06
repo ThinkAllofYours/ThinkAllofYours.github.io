@@ -1,0 +1,537 @@
+---
+sidebar_position: 1
+title: Pandas Basic
+---
+
+
+## Pandas 시작하기
+
+### 1. Poetry 환경에서 Pandas 시작하기
+
+poetry 가 설치되어 있지 않으면 설치하기
+
+여기  [https://python-poetry.org/](https://python-poetry.org/) 에서 설치하기
+
+### 2. Pandas 설치하기
+
+poetry add pandas
+
+### 3. Pandas 이용하는 이유
+
+최근 머신 러닝 알고리즘이 대성공을 거두고 있는데 
+`ChatGPT` 와 같은 머신 러닝 알고리즘은 대규모 데이터를 다루는 경우가 많다.   
+`Meta`의 `Llama 3` 과 같은 머신 러닝 알고리즘은 1B ~ 90B 까지 다양한 매게 변수를 이용하여 훈련을 시키는데   
+양만 중요한게 아니라 _품질도 매우 중요하다._
+
+많은 데이터가 누락되어 있거나 품질이 좋지 않으면 머신 러닝 알고리즘의 성능이 떨어진다.
+
+그러니 먼저 데이터를 살펴보고 데이터 분석을 수횅하여 양질의 데이터가 훈련 알고리즘에 쓰이도록 만드는 단계가 아주 중요하다.
+
+`Pandas` 는 데이터 분석을 위한 핵심 라이브러리이다.
+
+`Pandas Series` 와 `DataFrame` 은 이를 위해 적합한 도구 이다.  
+
+### 4. Pandas Series에 대해
+
+```python
+import pandas as pd
+groceries = pd.Series(data = [30, 6, 'Yes', 'No'], index = ['eggs', 'apples', 'milk', 'bread'])
+```
+
+groceries 데이터를 출력해보면 
+
+```bash
+eggs      30
+apples     6
+milk     Yes
+bread     No
+dtype: object
+```
+이와 같은데
+ 
+data는 데이터 자체이고 index 는 데이터의 인덱스 이다.
+
+그러니까 eggs 는 30 이고 apples 는 6 이다.
+
+보면 알겠지만 데이터 타입은 다양하다.
+
+데이터의 차원과 크기를 나타내는 값은 shape 이고   
+데이터 차원의 수를 나타내는 값은 ndim 이다.   
+데이터의 총 요소 갯수를 나타내는 값은 size 이다.
+
+index 를 확인하는 방법은
+
+```python
+'bananas' in groceries
+```
+
+이렇게 하면 된다.
+
+index를 이용해서 데이터에 접근하는 방법은 
+
+```python
+print(groceries['apples'])
+```
+
+이렇게 하면 된다.
+
+multiple index 에 접근하는 방법은 
+
+```python
+print(groceries[['apples', 'bread']])
+```
+
+이렇게 하면 된다.
+
+
+숫자를 통해 index에 접근할 수도 있는데 
+방법은 
+
+```python
+print(groceries[1])
+```
+
+이렇게 하면 된다.
+
+loc 를 이용해서 접근하는 방법은 
+
+```python
+print(groceries.loc['apples'])
+```
+
+이렇게 하면 된다.
+
+loc를 이용하는 이유는 ?
+
+loc를 이용하는 것이 더 명시적이고 안전한 인덱싱 방법이기 때문이다. 
+
+1. 명확성: loc는 항상 라벨(label) 기반 인덱싱을 수행한다. 즉, 인덱스의 이름으로 접근한다는 것이 명확하다.
+
+3. 일관성: 일반적인 대괄호 [] 인덱싱은 때로는 위치 기반(0, 1, 2...)으로, 때로는 라벨 기반으로 동작할 수 있어 혼란스러울 수 있다.
+
+3. 안전성: loc는 존재하지 않는 라벨에 접근할 때 KeyError를 발생시켜 잘못된 데이터 접근을 방지한다.
+
+예시:
+```python
+# loc를 사용한 명시적 인덱싱
+print(groceries.loc['apples'])
+
+# 여러 항목 선택
+print(groceries.loc[['apples', 'eggs']])
+
+# 조건부 선택도 가능
+print(groceries.loc[groceries > 10])
+```
+
+잘못된 인덱스에 접근하면 발생하는 에러는
+
+```python
+print(groceries.loc['banana'])
+```
+
+KeyError: 'banana'
+
+이런 에러가 발생하는데 에러를 처리하는 방법은?
+
+1. try-except 구문 사용하기:
+```python
+try:
+    value = groceries.loc['banana']
+except KeyError:
+    print("해당 인덱스가 존재하지 않습니다.")
+```
+
+2. in 연산자로 미리 확인하기:
+```python
+if 'banana' in groceries.index:
+    value = groceries.loc['banana']
+else:
+    print("해당 인덱스가 존재하지 않습니다.")
+```
+
+당연히 index 활용에서 값을 새로 할당하는 것도 가능하다.
+
+```python
+groceries.loc['apples'] = 10
+```
+
+drop 을 사용해서 삭제도 가능하다. 
+
+```python
+groceries.drop(index=['apples'])
+```
+이런 방법이나 
+
+```python
+groceries.drop(index=['apples'], inplace=True)
+groceries.drop('apples')
+```
+
+이런 방법도 있다.
+
+산술 연산도 가능한데 
+
+```python
+groceries + 10
+```
+
+근데 이렇게 하면 'TypeError: can only concatenate str (not "int") to str' 이런 에러가 발생한다.
+
+뜻은 문자열과 숫자를 더할 수 없다는 뜻이다.
+
+```python
+numeric_groceries = groceries[groceries.apply(type) == int]  # 정수형 데이터만 선택
+print(numeric_groceries + 10)
+```
+
+이렇게 하면 정수형 데이터만 선택되어 연산이 가능하다.
+
+numpy 의 exp, sqrt, power 등의 수학 함수도 사용 가능하다.
+
+현재 데이터 타입이 정수값으로 처리되어 에러가 발생하는데 
+
+numeric_groceries = pd.Series([x for x in groceries if isinstance(x, (int, float))])
+
+이렇게 하면 연산이 가능하다.
+
+```txt
+numeric_groceries
+
+에 대한 결과값이 
+
+eggs      30
+apples    10
+dtype: object
+
+이거였고
+
+numeric_groceries = pd.Series([x for x in groceries if isinstance(x, (int, float))])
+에 대한 결과 값은
+
+0    30
+1    10
+dtype: int64
+```
+dtype이 object에서 int64로 바뀐것 뿐인데 작동하는 이유는?
+
+1. object dtype은 Python 객체에 대한 참조를 저장하는 일반적인 데이터 타입임
+2. 비록 값들이 숫자처럼 보이지만, Python 객체로 저장되어 있어 NumPy의 수학 연산을 직접 적용하기 어려울 수 있다
+3. int64는 64비트 정수를 저장하는 NumPy의 네이티브 데이터 타입임    
+4. NumPy와 Pandas는 이 데이터 타입에 대해 최적화된 벡터화 연산을 수행할 수 있음
+5. 모든 NumPy 수학 함수들은 이 데이터 타입과 완벽하게 호환
+
+```python음
+import numpy as np
+print(np.exp(numeric_groceries))
+print(np.sqrt(numeric_groceries))
+print(np.power(numeric_groceries, 2))
+```
+
+exp는 지수함수, sqrt는 제곱근, power는 거듭제곱을 의미한다.
+
+iloc 를 이용해서 접근하는 방법은 
+
+```python
+# loc: 라벨 기반
+groceries.loc['eggs']  # 'eggs' 라벨을 가진 데이터 접근
+
+# iloc: 위치 기반
+groceries.iloc[0]  # 첫 번째 위치의 데이터 접근
+
+# 슬라이싱 차이
+groceries.loc['eggs':'milk']  # 'eggs'부터 'milk'까지 (양 끝 포함)
+groceries.iloc[0:2]  # 0부터 1까지 (끝 인덱스 제외)
+```
+loc가 라벨 기반이라면, iloc는 위치 기반
+
+
+### 5. Pandas DataFrame에 대해
+
+먼저 데이터를 만들어보자
+
+```python
+import pandas as pd
+
+# We create a dictionary of Pandas Series
+items = {'Bob' : pd.Series(data = [245, 25, 55], index = ['bike', 'pants', 'watch']),
+'Alice' : pd.Series(data = [40, 110, 500, 45], index = ['book', 'glasses', 'bike', 'pants'])}
+
+shopping_carts = pd.DataFrame(items)
+```
+
+pandas를 사용하면 columns을 통해서 쉽게 원하는 데이터를 추출 할 수 있다. 
+
+```python
+bob_shopping_cart = pd.DataFrame(items, columns=['Bob'])
+```
+
+	Bob
+bike	245
+pants	25
+watch	55
+
+index를 통해서 원하는 데이터를 추출 할 수 있다.
+
+```python
+specific_items = pd.DataFrame(items, index = ['bike', 'book'])
+```
+
+두개를 결합하는 것도 가능하다. 
+
+```python
+combi_shopping_cart = pd.DataFrame(items, columns=['Bob'], index=['bike', 'book'])
+```
+
+딕셔너리 리스트로 DataFrame 을 만드는 것도 가능하다.
+
+```python
+items2 = [{'bikes': 20, 'pants': 30, 'watches': 35},
+{'watches': 10, 'glasses': 50, 'bikes': 15, 'pants':5}]
+store_items = pd.DataFrame(items2, index = ['store 1', 'store 2'])
+```
+
+이를 통해 이런 것들을 알 수 있다. 
+
+Q. 각 스토어에 pants 재고는 얼마나 있나?
+```python
+print(store_items[['pants']])
+```
+
+Q. 각 스토어에 있는 모든 재고의 합은?
+
+```python
+print(store_items.sum())
+```
+
+Q. Store 1 에 있는 물품 내역?
+
+```python
+print(store_items.loc['store 1'])
+```
+
+Q. Store 1 에 있는 bikes 재고는 얼마나 있나?
+
+```python
+print(store_items['bikes']['store 1'])
+```
+
+기존의 데이터 프레임에 열 추가하기
+
+```python
+store_items['shirts'] = pd.Series(data = [15, 2], index = ['store 1', 'store 2'])
+```
+
+데이터 프레임 기존 열들 간에 산술 연산을 하여 새로운 열 추가하기
+
+pant 1개와 shirt 1개를 합쳐서 suit 1개를 만드는 것이다.
+```python
+store_items['suits'] = store_items[['pants', 'shirts']].min(axis=1)
+```
+
+:::tip
+참고로 axis=1 은 가로 방향으로 연산을 하는 것이고 axis=0 은 세로 방향으로 연산을 하는 것이다.
+axis 0을 연산하면 store 1 과 store 2 의 pants 와 shirts 중 작은 값을 출력한다.
+
+```bash
+pants     5
+shirts    2
+```
+:::
+
+데이터 프레임에 추가할 행 만들기 
+
+```python
+new_item = [{'bikes': 20, 'pants': 30, 'watches': 35, 'glasses': 4}]
+
+new_store = pd.DataFrame(new_item, index = ['store 3'])
+```
+
+데이터 프레임에 행 추가하기
+
+```python
+store_items = pd.concat([store_items, new_store])
+```
+
+데이터프레임에서 열을 하나 삭제하기
+
+```python
+store_items.pop('new watches')
+store_items.drop(columns=['new watches'])
+```
+
+데이터 프레임에서 열 레이블 변경하기
+
+```python
+store_items.rename(columns={'bikes': 'new bikes'})
+``` 
+
+기존의 열 값들을 행 index 로 변경하기
+
+```python
+store_items.set_index(['bikes'])
+```
+
+### 6. NaN 값 처리하기
+
+데이터프레임 만들기
+
+```python
+items2 = [{'bikes': 20, 'pants': 30, 'watches': 35, 'shirts': 15, 'shoes':8, 'suits':45},
+{'watches': 10, 'glasses': 50, 'bikes': 15, 'pants':5, 'shirts': 2, 'shoes':5, 'suits':7},
+{'bikes': 20, 'pants': 30, 'watches': 35, 'glasses': 4, 'shoes':10}]
+
+store_items = pd.DataFrame(items2, index = ['store 1', 'store 2', 'store 3'])
+```
+
+NaN 값의 갯수 확인하기
+
+```python
+store_items.isnull().sum()
+```
+isnull 은 NaN 값을 찾아주고 sum 은 갯수를 세어준다.
+한번더 sum 을 하면 총 갯수를 출력한다.
+
+```python
+store_items.isnull().sum().sum()
+```
+
+NaN인 경우에 요소를 부울 값 True / False 로 출력하기
+
+```python
+store_items.isnull()
+```
+
+NaN이 아닌 값의 총 갯수 세기
+
+```python
+store_items.count()
+```
+
+NaN 값이 있는 행 삭제하기 
+
+```python
+store_items.dropna(axis=0)
+```
+
+NaN 값이 있는 열 삭제하기
+
+```python
+store_items.dropna(axis=1)
+```
+
+NaN을 0으로 채우기
+
+```python
+store_items.fillna(0)
+```
+
+NaN을 평균값으로 채우기
+
+```python
+store_items.fillna(store_items.mean())
+```
+
+데이터프레임에서 세로로 NaN 값 채우기
+
+```python
+store_items.ffill(axis = 0)
+```
+
+데이터프레임에서 가로로 NaN 값 채우기
+
+```python
+store_items.ffill(axis = 1)
+```
+
+데이터프레임에서 세로로, 가로로 NaN 값들을 백워드 필링하기
+
+```python
+store_items.bfill(axis = 0)
+store_items.bfill(axis = 1)
+```
+
+데이터프레임에서 세로로, 가로로 NaN 값들을 보간하기
+
+```python
+store_items.interpolate(method = 'linear', axis = 0)
+store_items.interpolate(method = 'linear', axis = 1)
+```
+
+아래 데이터를 보고 문제를 풀어보자
+
+```python
+import pandas as pd
+import numpy as np
+
+pd.set_option('display.precision', 1)
+
+books = pd.Series(data = ['Great Expectations', 'Of Mice and Men', 'Romeo and Juliet', 'The Time Machine', 'Alice in Wonderland' ])
+authors = pd.Series(data = ['Charles Dickens', 'John Steinbeck', 'William Shakespeare', ' H. G. Wells', 'Lewis Carroll' ])
+
+user_1 = pd.Series(data = [3.2, np.nan ,2.5])
+user_2 = pd.Series(data = [5., 1.3, 4.0, 3.8])
+user_3 = pd.Series(data = [2.0, 2.3, np.nan, 4])
+user_4 = pd.Series(data = [4, 3.5, 4, 5, 4.2])
+```
+
+Q. 데이터 프레임을 만들어보자
+
+```python
+data = {'Author': authors, 'Book': books, 'User 1': user_1, 'User 2': user_2, 'User 3': user_3, 'User 4': user_4}
+book_ratings = pd.DataFrame(data)
+
+```
+
+Q. NaN 값을 평균값으로 채우기
+
+```python
+rating_columns = ['User 1','User 2','User 3','User 4']
+column_means = book_ratings[rating_columns].mean()
+book_ratings.ffill(column_means,  inplace=True)
+```
+
+Q. 평점 5점인 책의 타이틀은?
+
+```python
+best_rated_books = book_ratings[(book_ratings == 5).any(axis=1)]['Book']
+```
+
+Q. 점수만 출력하기 (select_dtypes 이용)
+
+```python
+book_ratings.select_dtypes(include=['float64', 'int64'])
+```
+
+#### DataFrame 의 활용법
+
+```python
+
+import pandas as pd
+import numpy as np
+
+Google_stock = pd.read_csv('./goog-1.csv')
+print('Google_stock is of type:', type(Google_stock))
+print('Google_stock has shape:', Google_stock.shape)
+Google_stock.head()
+Google_stock.tail()
+Google_stock.isnull().any()
+Google_stock.describe()
+Google_stock['Adj Close'].describe()
+
+print('Maximum values of each column:\n', Google_stock.max())
+print('Minimum Close value:', Google_stock['Close'].min())
+Google_stock['Close'].mean()
+correlation = Google_stock['Close'].corr(Google_stock['Open'])
+numeric_data = Google_stock.select_dtypes(include=['float64', 'int64'])
+numeric_data.corr()
+Google_stock['Date'] = pd.to_datetime(Google_stock['Date'])
+Google_stock['Date'] = Google_stock['Date'].map(lambda x: x.toordinal())
+
+# 데이터 프레임 만들기
+data = pd.read_csv('./fake-company.csv')
+data.groupby(['Year'])['Salary'].sum()
+data.groupby(['Year'])['Salary'].sum()
+data.groupby(['Year','Name'])['Salary'].sum()
+
+```
+
