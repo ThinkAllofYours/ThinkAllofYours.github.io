@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { gsap } from "gsap";
 import styles from "./styles.module.css";
+import SupermanLogo from "@site/static/img/superman_logo.svg";
+import SupermanLogoCrack from "@site/static/img/superman_logo_crack.svg";
 
 const colors = [
   'var(--ifm-color-primary)',
@@ -118,8 +120,53 @@ const DevLogo = () => {
 
 export default function HomepageFeatures(): JSX.Element {
   return (
-    <section className={styles.features}>
-      <div className="container" style={{ display: 'flex', justifyContent: 'center' }}>
+    <section className={styles.features} style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '100vh'
+    }}>
+      <div style={{ 
+        width: '600px', 
+        height: '600px',
+        position: 'relative',
+        margin: '0 auto',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <div style={{ 
+          position: 'absolute',
+          top: '50%',
+          left: '54%',
+          transform: 'translate(-50%, -50%)',
+          width: '100%',
+          height: '100%',
+          zIndex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <SupermanLogo />
+        </div>
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '100%',
+          height: '100%',
+          zIndex: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <SupermanLogoCrack />
+        </div>
+      </div>
+      <h1>Developer's Geek World</h1>
+      <div className="container" style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
         <DevLogo />
       </div>
     </section>
