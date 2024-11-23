@@ -14,27 +14,64 @@ const colors = [
 
 const DevLogo = () => {
   useEffect(() => {
-    const rectangles = document.querySelectorAll("rect");
+    const rectangles = Array.from(document.querySelectorAll("rect"))
+      .sort((a, b) => {
+        const aX = parseInt(a.getAttribute("x") || "0");
+        const bX = parseInt(b.getAttribute("x") || "0");
+        return aX - bX;
+      });
     
-    // 타임라인 생성
     const tl = gsap.timeline({
       repeat: -1,
       repeatDelay: 1
     });
 
-    // 한 번의 애니메이션으로 모든 사각형 처리
+    // 초기 상태 설정 (모든 사각형을 투명하고 왼쪽에서 시작)
+    gsap.set(rectangles, {
+      opacity: 0,
+      x: -100,
+    });
+
     tl.to(rectangles, {
-      rotationY: 360,
-      fill: () => colors[Math.floor(Math.random() * colors.length)],
+      opacity: 1,
+      x: 0,
+      duration: 0.5,
+      ease: "power1.out"
+    }, "-=0.5")
+
+    // 순차적으로 나타나면서 제자리로 이동
+    tl.from(rectangles, {
+      opacity: 0,
+      x: 100,
+      duration: 0.5,
+      stagger: {
+        each: 0.05,
+        from: "start"
+      },
+      ease: "power1.out"
+    })
+    // 회전 애니메이션
+    .to(rectangles, {
+      opacity: 1,
+      rotation: 360,
       duration: 1,
       stagger: {
         each: 0.05,
         from: "start"
       },
       ease: "power1.inOut"
-    });
+    }, "-=0.5") // 이전 애니메이션이 끝나기 0.5초 전에 시작
+    // 색상 변경
+    .to(rectangles, {
+      fill: () => colors[Math.floor(Math.random() * colors.length)],
+      duration: 0.5,
+      stagger: {
+        each: 0.05,
+        from: "start"
+      },
+      ease: "none"
+    }, ">");
 
-    // 컴포넌트 언마운트 시 애니메이션 정리
     return () => {
       tl.kill();
     };
