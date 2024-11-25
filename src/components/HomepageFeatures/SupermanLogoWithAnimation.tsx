@@ -4,62 +4,74 @@ import styles from "./styles.module.css";
 import SupermanLogo from "@site/static/img/supermanlogo.svg";
 
 export const SupermanLogoWithAnimation = () => {
-  const [isAnimation, setIsAnimation] = useState(true);
-
   useEffect(() => {
     const paths = document.querySelectorAll('.superman-logo-svg path');
+
     
     paths.forEach(path => {
       const length = (path as SVGPathElement).getTotalLength();
       gsap.set(path, {
         strokeDasharray: length,
         strokeDashoffset: length,
-        stroke: 'var(--ifm-color-primary)',
-        fill: 'transparent'
+        stroke: '#FFD700',
+        // fill: 'transparent'
       });
     });
 
-    gsap.set('.superman-logo-svg-fixed', {
-      opacity: 0.4,
-    });
-
-    const tl = gsap.timeline();
-    const tl2 = gsap.timeline();
+    const tl = gsap.timeline({
+      repeatDelay: 1
+    })
 
     tl.to('.superman-logo-svg path', {
       strokeDashoffset: 0,
-      duration: 2,
+      duration: 1,
+      fill: 'transparent',
       stagger: {
-        each: 0.2,
+        each: 0.1,
         from: "start"
       },
       ease: "power1.inOut"
     })
+    
     .to('.superman-logo-svg path', {
-      duration: 2,
-      strokeWidth: 1,
-      ease: "power1.out",
-      opacity: 0.5,
-      onComplete: () => {
-        setIsAnimation(false);
+      stroke: 'transparent',
+      repeat: 1,
+      duration: 0.005,
+      stagger: {
+        each: 0.05,
+        from: "start"
       }
     })
-    tl2.to('.superman-logo-svg-fixed', {
-      opacity: 1,
-      duration: 1,
-      ease: "power1.in"
+
+    .to('.superman-logo-svg path', {
+      stroke: '#FFD700',
+      duration: 0.1,
+      stagger: {
+        each: 0.05,
+        from: "start"
+      }
+    })
+
+    const tl2 = gsap.timeline({
+      repeat: -1,
+      repeatDelay: 1
     });
 
+    tl2.to('.superman-logo-svg path', {
+      duration: 0.5,
+      ease: "power1.inOut",
+      opacity: 0.7,
+    });
 
     return () => {
       tl.kill();
+      tl2.kill();
     };
-  }, [isAnimation]);
+  }, []);
 
   return (
     <div className={styles.supermanLogo}>
-      {isAnimation && <SupermanLogo className="superman-logo-svg" />}
-      {!isAnimation && <SupermanLogo className="superman-logo-svg-fixed" />}
+      <SupermanLogo className="superman-logo-svg" />
     </div>
   );
 };

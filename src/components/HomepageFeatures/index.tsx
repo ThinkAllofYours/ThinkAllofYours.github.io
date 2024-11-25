@@ -18,7 +18,6 @@ export default function HomepageFeatures(): JSX.Element {
       <div className="container" style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
         <DevLogo />
       </div>
-      <h2>Developer's Can Change The World</h2>
     </section>
   );
 }

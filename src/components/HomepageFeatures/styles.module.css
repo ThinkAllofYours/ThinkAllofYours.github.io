@@ -56,13 +56,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 90vh;
+  height: 85vh;
   margin-top: 2rem;
-  margin-bottom: 2rem;
 }
 
 @media (max-width: 768px) {
   .homepageFeaturesSection {
-    height: 70vh;
+    height: 60vh;
   }
 }
