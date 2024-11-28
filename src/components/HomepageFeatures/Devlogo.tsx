@@ -303,9 +303,16 @@ export const DevLogo = () => {
       const text = TEXTS[currentTextIndex];
       const charGroups = createPixelText(text);
       
+      // charGroups가 없으면 애니메이션을 실행하지 않음
+      if (!charGroups || charGroups.length === 0) {
+        currentTextIndex = (currentTextIndex + 1) % TEXTS.length;
+        setTimeout(animate, 500);
+        return;
+      }
+
       const tl = gsap.timeline({
         onComplete: () => {
-          currentTextIndex = (currentTextIndex + 1) % TEXTS.length
+          currentTextIndex = (currentTextIndex + 1) % TEXTS.length;
           setTimeout(animate, 500);
         }
       });
@@ -332,16 +339,18 @@ export const DevLogo = () => {
       .add(() => {
         charGroups.forEach(group => {
           const pixels = group.querySelectorAll('rect');
-          gsap.to(pixels, {
-            rotation: 360,
-            duration: 1,
-            stagger: {
-              amount: 0.2,
-              from: "random"
-            },
-            transformOrigin: "center center",
-            ease: "power2.in"
-          });
+          if (pixels.length > 0) {  // pixels가 있을 때만 애니메이션 실행
+            gsap.to(pixels, {
+              rotation: 360,
+              duration: 1,
+              stagger: {
+                amount: 0.2,
+                from: "random"
+              },
+              transformOrigin: "center center",
+              ease: "power2.in"
+            });
+          }
         });
       })
 
@@ -349,20 +358,21 @@ export const DevLogo = () => {
       .add(() => {
         charGroups.forEach(group => {
           const pixels = group.querySelectorAll('rect');
-          
-          gsap.to(pixels, {
-            opacity: 0,
-            scale: 0,
-            x: () => gsap.utils.random(-200, 200),
-            y: () => gsap.utils.random(-200, 200),
-            rotation: () => gsap.utils.random(-360, 360),
-            duration: 1,
-            stagger: {
-              amount: 0.3,
-              from: "random"
-            },
-            ease: "power3.out"
-          });
+          if (pixels.length > 0) {  // pixels가 있을 때만 애니메이션 실행
+            gsap.to(pixels, {
+              opacity: 0,
+              scale: 0,
+              x: () => gsap.utils.random(-200, 200),
+              y: () => gsap.utils.random(-200, 200),
+              rotation: () => gsap.utils.random(-360, 360),
+              duration: 1,
+              stagger: {
+                amount: 0.3,
+                from: "random"
+              },
+              ease: "power3.out"
+            });
+          }
         });
       })
 
