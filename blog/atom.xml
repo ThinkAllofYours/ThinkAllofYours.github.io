@@ -20,4 +20,94 @@
         </author>
         <category label="Facebook" term="Facebook"/>
     </entry>
+    <entry>
+        <title type="html"><![CDATA[🚀 PHP 레거시 코드 리팩토링 - 300배 성능 개선 사례]]></title>
+        <id>https://ThinkAllofYours.github.io/blog/php-legacy/</id>
+        <link href="https://ThinkAllofYours.github.io/blog/php-legacy/"/>
+        <updated>2023-12-04T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[📝 개요]]></summary>
+        <content type="html"><![CDATA[<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-개요">📝 개요<a href="https://thinkallofyours.github.io/blog/php-legacy/#-%EA%B0%9C%EC%9A%94" class="hash-link" aria-label="Direct link to 📝 개요" title="Direct link to 📝 개요">​</a></h2>
+<p>레거시 PHP 시스템의 성능 개선 사례를 공유합니다. <strong>300분</strong>이 걸리던 데이터 처리 작업을 <strong>5초</strong>로 단축한 리팩토링 과정을 설명합니다.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-문제-상황">🔍 문제 상황<a href="https://thinkallofyours.github.io/blog/php-legacy/#-%EB%AC%B8%EC%A0%9C-%EC%83%81%ED%99%A9" class="hash-link" aria-label="Direct link to 🔍 문제 상황" title="Direct link to 🔍 문제 상황">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="-기존-시스템의-문제점">❌ 기존 시스템의 문제점<a href="https://thinkallofyours.github.io/blog/php-legacy/#-%EA%B8%B0%EC%A1%B4-%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%9D%98-%EB%AC%B8%EC%A0%9C%EC%A0%90" class="hash-link" aria-label="Direct link to ❌ 기존 시스템의 문제점" title="Direct link to ❌ 기존 시스템의 문제점">​</a></h3>
+<ul>
+<li>300명의 데이터 처리에 약 300분 소요 (1인당 1분)</li>
+<li>운영팀의 업무 효율성 저하</li>
+<li>데이터가 증가할수록 기하급수적으로 처리 시간 증가</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="-성능-저하의-주요-원인">🤔 성능 저하의 주요 원인<a href="https://thinkallofyours.github.io/blog/php-legacy/#-%EC%84%B1%EB%8A%A5-%EC%A0%80%ED%95%98%EC%9D%98-%EC%A3%BC%EC%9A%94-%EC%9B%90%EC%9D%B8" class="hash-link" aria-label="Direct link to 🤔 성능 저하의 주요 원인" title="Direct link to 🤔 성능 저하의 주요 원인">​</a></h3>
+<ol>
+<li>
+<p><strong>비효율적인 데이터 조회 방식</strong></p>
+<div class="language-php codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-php codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#F8F8F2"><span class="token plain">// 기존: 단건 조회 반복</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">for($i = 0; $i &lt; count($list); $i++) {</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    $sql = "SELECT id, member_info FROM 고객테이블 WHERE id = '$user_id'";</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    // 매 반복마다 DB 조회 발생</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    // 고객이 입과 되어 있는 데이터 조회 1</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    // for문 안에서 고객 정보가 있는 또다른 데이터 조회</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    // 고객 정보가 있는 또다른 데이터 조회</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    // 이러한 방식으로 데이터 조회가 반복되어 성능 저하</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+</li>
+<li>
+<p><strong>트랜잭션 관리 미흡</strong></p>
+<ul>
+<li>건별 처리 및 커밋으로 인한 오버헤드</li>
+<li>부분 실패 시 데이터 정합성 문제</li>
+</ul>
+</li>
+</ol>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-개선-방안">⚡ 개선 방안<a href="https://thinkallofyours.github.io/blog/php-legacy/#-%EA%B0%9C%EC%84%A0-%EB%B0%A9%EC%95%88" class="hash-link" aria-label="Direct link to ⚡ 개선 방안" title="Direct link to ⚡ 개선 방안">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1--데이터-조회-최적화">1. 💾 데이터 조회 최적화<a href="https://thinkallofyours.github.io/blog/php-legacy/#1--%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A1%B0%ED%9A%8C-%EC%B5%9C%EC%A0%81%ED%99%94" class="hash-link" aria-label="Direct link to 1. 💾 데이터 조회 최적화" title="Direct link to 1. 💾 데이터 조회 최적화">​</a></h3>
+<div class="language-php codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-php codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#F8F8F2"><span class="token plain">// 개선: IN 절을 활용한 일괄 조회</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">$user_ids = array_column($list, 'user_id');</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">$sql = "SELECT * FROM 고객테이블 WHERE id IN (" . implode(',', $user_ids) . ")";</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">$result = sql_query($sql);</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">// 메모리 캐싱 구현</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">$user_map = [];</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">while($row = sql_fetch_array($result)) {</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    $user_map[$row['id']] = $row;  // 사용자 ID를 키로 하는 연관 배열 생성</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">}</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">// 캐시된 데이터 활용 예시</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">foreach($list as $item) {</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    $user_id = $item['user_id'];</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    if (isset($user_map[$user_id])) {</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">        $user_info = $user_map[$user_id];  // DB 조회 없이 메모리에서 즉시 조회</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">        // 추가 처리 로직...</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    }</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="메모리-캐싱-효과">메모리 캐싱 효과<a href="https://thinkallofyours.github.io/blog/php-legacy/#%EB%A9%94%EB%AA%A8%EB%A6%AC-%EC%BA%90%EC%8B%B1-%ED%9A%A8%EA%B3%BC" class="hash-link" aria-label="Direct link to 메모리 캐싱 효과" title="Direct link to 메모리 캐싱 효과">​</a></h4>
+<ul>
+<li>🚀 DB 조회 횟수: 300회 → 1회로 감소</li>
+<li>💡 조회 속도: O(n) → O(1) 복잡도로 개선</li>
+<li>🔄 데이터 재사용: 동일 데이터 반복 조회 제거</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="2--bulk-insert-구현">2. 📦 Bulk Insert 구현<a href="https://thinkallofyours.github.io/blog/php-legacy/#2--bulk-insert-%EA%B5%AC%ED%98%84" class="hash-link" aria-label="Direct link to 2. 📦 Bulk Insert 구현" title="Direct link to 2. 📦 Bulk Insert 구현">​</a></h3>
+<div class="language-php codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-php codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#F8F8F2"><span class="token plain">function bulk_insert($tableName, $columns, $values) {</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    $sql = "INSERT INTO {$tableName} (" . implode(',', $columns) . ") VALUES ";</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    $valueStrings = [];</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    </span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    foreach($values as $row) {</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">        $valueStrings[] = "(" . implode(',', array_map('sql_escape', $row)) . ")";</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    }</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    </span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    $sql .= implode(',', $valueStrings);</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    return sql_query($sql);</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="3--트랜잭션-처리-개선">3. 🔄 트랜잭션 처리 개선<a href="https://thinkallofyours.github.io/blog/php-legacy/#3--%ED%8A%B8%EB%9E%9C%EC%9E%AD%EC%85%98-%EC%B2%98%EB%A6%AC-%EA%B0%9C%EC%84%A0" class="hash-link" aria-label="Direct link to 3. 🔄 트랜잭션 처리 개선" title="Direct link to 3. 🔄 트랜잭션 처리 개선">​</a></h3>
+<div class="language-php codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-php codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#F8F8F2"><span class="token plain">sql_begin_transaction();</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">try {</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    // 데이터 검증</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    $validated_data = processValidate($input_data);</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    </span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    // Bulk Insert 실행</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    bulk_insert('score_table', $columns, $validated_data);</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    bulk_insert('history_table', $columns, $validated_data);</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    </span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    sql_commit();</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">} catch (Exception $e) {</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    sql_rollback();</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    log_error($e-&gt;getMessage());</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    return ['success' =&gt; false, 'message' =&gt; '처리 중 오류가 발생했습니다.'];</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-개선-결과">📊 개선 결과<a href="https://thinkallofyours.github.io/blog/php-legacy/#-%EA%B0%9C%EC%84%A0-%EA%B2%B0%EA%B3%BC" class="hash-link" aria-label="Direct link to 📊 개선 결과" title="Direct link to 📊 개선 결과">​</a></h2>
+<table><thead><tr><th>구분</th><th>처리 시간</th><th>메모리 사용량</th><th>DB 부하</th></tr></thead><tbody><tr><td>개선 전</td><td>300분</td><td>높음</td><td>높음</td></tr><tr><td>개선 후</td><td>5초</td><td>최적화</td><td>낮음</td></tr></tbody></table>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="-주요-개선-포인트">✨ 주요 개선 포인트<a href="https://thinkallofyours.github.io/blog/php-legacy/#-%EC%A3%BC%EC%9A%94-%EA%B0%9C%EC%84%A0-%ED%8F%AC%EC%9D%B8%ED%8A%B8" class="hash-link" aria-label="Direct link to ✨ 주요 개선 포인트" title="Direct link to ✨ 주요 개선 포인트">​</a></h3>
+<ol>
+<li>
+<p><strong>🔋 데이터베이스 호출 최소화</strong></p>
+<ul>
+<li>300 * 10회 → 10회로 감소</li>
+<li>메모리 캐싱 활용</li>
+</ul>
+</li>
+<li>
+<p><strong>⚡ 일괄 처리 도입</strong></p>
+<ul>
+<li>Bulk Insert로 Insert 쿼리 최소화</li>
+<li>트랜잭션 단위 최적화</li>
+</ul>
+</li>
+<li>
+<p><strong>📈 코드 품질 향상</strong></p>
+<ul>
+<li>모듈화 및 함수 분리</li>
+<li>에러 처리 강화</li>
+<li>데이터 검증 로직 체계화</li>
+</ul>
+</li>
+</ol>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-마치며">💫 마치며<a href="https://thinkallofyours.github.io/blog/php-legacy/#-%EB%A7%88%EC%B9%98%EB%A9%B0" class="hash-link" aria-label="Direct link to 💫 마치며" title="Direct link to 💫 마치며">​</a></h2>
+<blockquote>
+<p>이번 리팩토링을 통해 얻은 교훈:</p>
+</blockquote>
+<ul>
+<li>🎯 레거시 코드도 적절한 리팩토링으로 큰 성능 개선이 가능</li>
+<li>💡 데이터베이스 작업 최적화의 중요성</li>
+<li>🏗️ 체계적인 코드 구조의 필요성</li>
+</ul>
+<p>앞으로도 지속적인 코드 개선과 학습을 통해 더 나은 시스템을 만들어가보겠습니다.</p>
+<p>Legacy..Legacy..Legacy.. 내가 만들땐 진짜 이런 문제가 안생기도록 노력해야 할 것 같습니다.</p>
+<div class="theme-admonition theme-admonition-tip admonition_xJq3 alert alert--success"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 12 16"><path fill-rule="evenodd" d="M6.5 0C3.48 0 1 2.19 1 5c0 .92.55 2.25 1 3 1.34 2.25 1.78 2.78 2 4v1h5v-1c.22-1.22.66-1.75 2-4 .45-.75 1-2.08 1-3 0-2.81-2.48-5-5.5-5zm3.64 7.48c-.25.44-.47.8-.67 1.11-.86 1.41-1.25 2.06-1.45 3.23-.02.05-.02.11-.02.17H5c0-.06 0-.13-.02-.17-.2-1.17-.59-1.83-1.45-3.23-.2-.31-.42-.67-.67-1.11C2.44 6.78 2 5.65 2 5c0-2.2 2.02-4 4.5-4 1.22 0 2.36.42 3.22 1.19C10.55 2.94 11 3.94 11 5c0 .66-.44 1.78-.86 2.48zM4 14h5c-.23 1.14-1.3 2-2.5 2s-2.27-.86-2.5-2z"></path></svg></span>💡 참고</div><div class="admonitionContent_BuS1"><p>실제 프로덕션 환경에서 검증된 사례입니다. 유사한 성능 이슈가 있다면 이러한 접근 방식을 고려해보세요.</p></div></div>]]></content>
+        <author>
+            <name>BUNDABERG MAN</name>
+            <uri>https://github.com/ThinkAllofYours</uri>
+        </author>
+        <category label="php" term="php"/>
+        <category label="performance" term="performance"/>
+        <category label="refactoring" term="refactoring"/>
+        <category label="legacy-code" term="legacy-code"/>
+    </entry>
 </feed>
