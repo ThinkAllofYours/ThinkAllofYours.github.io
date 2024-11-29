@@ -1,0 +1,195 @@
+---
+sidebar_position: 2
+title: Pydantic Basic
+---
+
+# Pydantic Basic
+
+## 1. Pydantic 기본 이해하기
+
+### 1.1. Pydantic 소개
+
+- 목적 : 데이터 검증 및 설정 관리를 위한 Python 라이브러리.
+- 특징 
+    - 타입 힌트를 기반으로 한 강력한 데이터 검증
+    - FastAPI와의 높은 호환성
+    - 데이터 모델링과 직렬화 지원
+
+### 1.2 기본 모델 생성
+
+```python
+from pydantic import BaseModel
+
+class User(BaseModel):
+    id: int
+    name: str
+    is_active: bool = True # 기본값 설정
+
+# 모델 인스턴스 생성
+user = User(id=1, name="John Doe")
+print(user)
+```
+
+### 1.3 데이터 검증
+
+```python
+from pydantic import ValidationError, BaseModel
+
+class Product(BaseModel):
+    id: int
+    name: str
+    price: float
+
+try:
+    product = Product(id="1", name="Laptop", price="1000")
+except ValidationError as e:
+    print(e)
+```
+
+- 설명 : 잘못된 타입의 데이터를 입력하면 `ValidationError` 예외가 발생합니다.
+
+## 2. Pydantic과 FastAPI 연동하기
+
+### 2.1 FastAPI에서 Pydantic 모델 사용하기
+
+```python
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class Item(BaseModel):
+    name: str
+    price: float
+    is_offer: bool = None
+
+@app.post("/items/")
+async def create_item(item: Item):
+    return item
+```
+
+- 설명: FastAPI는 엔드포인트에서 Pydantic 모델을 자동으로 데이터 검증과 문서화에 활용합니다.
+
+### 2.2 요청과 응답 모델 분리하기
+
+```python
+class ItemRequest(BaseModel):
+    name: str
+    price: float
+
+class ItemResponse(BaseModel):
+    id: int
+    name: str
+    price: float
+    is_offer: bool = None
+
+@app.post("/items/", response_model=ItemResponse)
+```
+
+## 3. 고급 Pydantic 기능 학습
+
+### 3.1 모델 상속
+
+```python
+class BaseUser(BaseModel):
+    id: int
+    name: str
+
+class UserCreate(BaseUser):
+    password: str
+
+class UserRead(BaseUser):
+    is_active: bool
+```
+
+- 설명 : 공통 필드를 `BaseUser`에 정의하고, 이를 상속받아 특정 용도의 모델을 생성할 수 있습니다. 
+
+### 3.2 커스텀 검증 
+
+```python
+from pydantic import BaseModel, validator
+
+class User(BaseModel):
+    id: int
+    name: str
+    email: str
+
+    @validator('email')
+    def validate_email(cls, v):
+        if '@' not in v:
+            raise ValueError('Invalid email address')
+        return v
+
+try:
+    user = User(id=1, name="John Doe", email="john.doe")
+except ValidationError as e:
+    print(e)
+```
+
+- 설명 : `@validator` 데코레이터를 사용하여 커스텀 검증 메서드를 정의할 수 있습니다. 
+
+### 3.3 설정 관리
+
+```python
+from pydantic import BaseSettings
+
+class Settings(BaseSettings):
+    app_name: str
+    admin_email: str
+    items_per_user: int = 50
+
+    class Config:
+        env_file = ".env"
+
+settings = Settings()
+print(settings.app_name)
+```
+
+- 설명: 환경 변수를 활용하여 설정을 관리할 수 있습니다. `.env` 파일을 통해 쉽게 설정 값을 불러올 수 있습니다. 
+
+## 4. 성능 최적화 
+
+### 4.1 모델 캐싱
+
+:::tip
+Tip: Pydantic 모델을 반복적으로 생성하지 않고 캐싱하여 성능을 향상시킬 수 있습니다.
+:::
+
+```python
+from functools import lru_cache
+
+@lru_cache()
+def get_settings():
+    return Settings()
+
+settings = get_settings()
+```
+- 메모리 사용: @lru_cache()는 캐시된 데이터를 메모리에 저장하므로, 캐시 크기를 적절히 설정하여 메모리 과다 사용을 방지해야 합니다.
+- 동시성: 다중 스레드 환경에서는 캐시된 데이터에 대한 동시 접근을 고려해야 합니다. 일반적으로 @lru_cache()는 스레드 안전하지만, 캐시의 일관성을 유지하기 위해 주의가 필요합니다.
+
+
+### 4.2 빠른 속도를 위한 설정
+
+- `Config` 클래스의 `validate_assignment`와 같은 설정을 조절하여 성능을 최적화할 수 있습니다.
+
+```python
+class Settings(BaseSettings):
+    app_name: str
+    admin_email: str
+    items_per_user: int = 50
+
+    class Config:
+        validate_assignment = False # 필요 시 검증 비활성화
+```
+
+#### Q. 언제 validate_assignment를 사용할까?
+
+- validate_assignment=True:
+    - 모델 인스턴스의 필드를 변경할 때마다 데이터 무결성을 보장하고 싶을 때.
+    - 예를 들어, 사용자 입력을 실시간으로 검증해야 하는 경우.
+
+- validate_assignment=False:
+    - 성능이 중요한 상황에서 필드 변경 시 검증이 필요 없거나, 변경 전에 이미 데이터를 검증했다고 확신할 때.
+    - 대량의 데이터 업데이트 시 검증 비용을 줄이고 싶을 때.
+
+
