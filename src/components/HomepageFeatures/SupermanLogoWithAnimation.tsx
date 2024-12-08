@@ -14,7 +14,6 @@ export const SupermanLogoWithAnimation = () => {
         strokeDasharray: length,
         strokeDashoffset: length,
         stroke: '#FFD700',
-        // fill: 'transparent'
       });
     });
 

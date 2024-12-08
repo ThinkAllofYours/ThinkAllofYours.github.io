@@ -34,22 +34,36 @@
   top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 100%;
-  height: 100%;
+  width: 60%;
+  height: auto;
+  max-width: 800px;
+  aspect-ratio: 1 / 1;
   z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .supermanLogo {
-    top: 40%;
-    width: 90%;
-    height: 90%;
+    max-width: 600px;
   }
 }
 
+@media (max-width: 768px) {
+  .supermanLogo {
+    top: 40%;
+    max-width: 400px;
+    width: 90%;
+  }
+}
+
+@media (max-width: 480px) {
+  .supermanLogo {
+    max-width: 250px;
+    width: 90%;
+  }
+}
 
 .homepageFeaturesSection {
   display: flex;
