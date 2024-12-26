@@ -18,6 +18,7 @@ export default function HomepageFeatures(): JSX.Element {
       <div className="container" style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
         <DevLogo />
       </div>
+      {/* 아래를 코딩 철학에 관하여 작성 */}
     </section>
   );
 }
