@@ -1,6 +1,6 @@
 {
   "label": "FastAPI Docs",
-  "position": 2,
+  "position": 3,
   "link": {
     "type": "generated-index",
     "description": "FastAPI 관련 문서입니다."
