@@ -1,0 +1,73 @@
+---
+slug: 144_binary_tree
+title: 🚀 144. Binary Tree Preorder Traversal
+authors: [bundabergman]
+tags: [algorithm, binary-tree, preorder-traversal]
+---
+
+- **144. Binary Tree Preorder Traversal**
+    
+    [Binary Tree Preorder Traversal - LeetCode](https://leetcode.com/problems/binary-tree-preorder-traversal/)
+    
+    이런 문제는 for문으로 해결하는 것보다 recursive로 해결하는 것이 바람직하다고 생각했다.
+    
+    binary tree가 데이터 구조로 있으면 for문으로 해결하는건 어렵다
+    
+    그래서 생각한 코드는
+    
+    ```python
+    # Definition for a binary tree node.
+    # class TreeNode:
+    #     def __init__(self, val=0, left=None, right=None):
+    #         self.val = val
+    #         self.left = left
+    #         self.right = right
+    class Solution:
+        def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+            output = []
+            if root and root.val is not None:
+                output.append(root.val)
+                if root.right or root.left:
+                    self.insert_val(output, root.left)
+                    self.insert_val(output, root.right)
+            return output
+    
+        def insert_val(self, output, root:Optional[TreeNode]):
+            if root is None or root.val is None:
+                return
+    
+            output.append(root.val)
+            self.insert_val(output, root.left)
+            self.insert_val(output, root.right)
+    ```
+    
+    왼쪽부터 오른쪽 순으로 데이터를 넣어야 한다.
+    
+    chat.openAi에게 물어봤더니
+    
+    ```python
+    # Definition for a binary tree node.
+    # class TreeNode:
+    #     def __init__(self, val=0, left=None, right=None):
+    #         self.val = val
+    #         self.left = left
+    #         self.right = right
+    class Solution:
+        def preorderTraversal(self, root: TreeNode) -> List[int]:
+            if not root:
+                return []
+            result = []
+            stack = [root]
+            while stack:
+                node = stack.pop()
+                result.append(node.val)
+                if node.right:
+                    stack.append(node.right)
+                if node.left:
+                    stack.append(node.left)
+            return result
+    ```
+    
+    이렇게 풀었다. 신박한 풀이법이다. 아마 다른 사용자들이 풀어놓은 방법 이겠지?
+    
+    여기서는 자료구조가 stack이기 때문에 오른쪽부터 먼저넣어야 왼쪽부터 리스트에 넣을 수있다.
