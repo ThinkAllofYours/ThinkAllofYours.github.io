@@ -2,3 +2,19 @@ facebook:
   label: Facebook
   permalink: /facebook
   description: Facebook tag description
+php:
+  label: PHP
+  permalink: /php
+  description: PHP related posts
+performance:
+  label: Performance
+  permalink: /performance
+  description: Performance optimization related posts
+refactoring:
+  label: Refactoring
+  permalink: /refactoring
+  description: Code refactoring related posts
+legacy-code:
+  label: Legacy Code
+  permalink: /legacy-code
+  description: Legacy code related posts

@@ -1,15 +1,16 @@
 ---
 slug: fullpage-js-nextjs-typescript-integration
 title: 🎨 Fullpage.js + Next.js + TypeScript로 멋진 웹페이지 만들기
-authors: [thinkallofyours]
+authors: [bundabergman]
 tags: [fullpage.js, nextjs, typescript, react, frontend]
 ---
 
-# Fullpage.js + Next.js + TypeScript로 멋진 웹페이지 만들기 🚀
+## Fullpage.js + Next.js + TypeScript로 멋진 웹페이지 만들기 🚀
 
 안녕하세요! 오늘은 Fullpage.js, Next.js, 그리고 TypeScript를 함께 사용하여 멋진 웹 페이지를 구현하는 방법을 공유하려고 합니다. 인터넷에서 이 세 가지 기술을 함께 사용하는 예제를 찾기 어려워 이렇게 블로그에 작성하게 되었습니다.
 
 ## 📚 참고 자료
+
 - [공식 Next.js 샘플](https://github.com/alvarotrigo/react-fullpage/tree/master/examples/next)
 - [완성된 프로젝트 GitHub](https://github.com/ThinkAllofYours/fullpage_nextjs_typescript.git)
 
@@ -24,6 +25,7 @@ npm install @fullpage/react-fullpage
 ```
 
 ### 📦 package.json
+
 ```json
 {
   "name": "fullpage_nextjs_typescript",

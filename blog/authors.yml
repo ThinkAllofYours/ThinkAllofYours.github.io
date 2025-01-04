@@ -1,8 +1,8 @@
 bundabergman:
-  name: BUNDABERG MAN
-  title: Blog Owner 
-  url: https://github.com/ThinkAllofYours
-  image_url: https://github.com/ThinkAllofYours.png
+  name: Bundaberg Man
+  title: Maintainer of Docusaurus
+  url: https://github.com/bundabergman
+  image_url: https://github.com/bundabergman.png
   page:
     permalink: '/all-bundaberg-man-articles'
   socials:
