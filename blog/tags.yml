@@ -18,3 +18,23 @@ legacy-code:
   label: Legacy Code
   permalink: /legacy-code
   description: Legacy code related posts
+fullpage.js:
+  label: Fullpage.js
+  permalink: /fullpage-js
+  description: Fullpage.js related posts
+nextjs:
+  label: Next.js
+  permalink: /nextjs
+  description: Next.js framework related posts
+typescript:
+  label: TypeScript
+  permalink: /typescript
+  description: TypeScript programming language posts
+react:
+  label: React
+  permalink: /react
+  description: React library related posts
+frontend:
+  label: Frontend
+  permalink: /frontend
+  description: Frontend development related posts
