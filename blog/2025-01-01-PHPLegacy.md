@@ -1,5 +1,5 @@
 ---
-slug: php-legacy
+slug: php-legacy-code
 title: PHP 코드의 예측 불가능한 동작 
 authors: [bundabergman]
 tags: [php, performance, refactoring, legacy-code]
