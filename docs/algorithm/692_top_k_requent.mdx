@@ -1,0 +1,76 @@
+---
+slug: 692_top_k_frequent
+title: 🚀 692. Top K Frequent Words
+authors: [bundabergman]
+tags: [algorithm, heap]
+---
+
+[Top K Frequent Words - LeetCode](https://leetcode.com/problems/top-k-frequent-words/description/)
+
+**692. Top K Frequent Words**
+
+**Medium**
+
+Given an array of strings `words` and an integer `k`, return *the* `k` *most frequent strings*.
+
+Return the answer **sorted** by **the frequency** from highest to lowest. Sort the words with the same frequency by their **lexicographical order**.
+
+**Example 1:**
+
+```
+Input: words = ["i","love","leetcode","i","love","coding"], k = 2
+Output: ["i","love"]
+Explanation: "i" and "love" are the two most frequent words.
+Note that "i" comes before "love" due to a lower alphabetical order.
+
+```
+
+**Example 2:**
+
+```
+Input: words = ["the","day","is","sunny","the","the","the","sunny","is","is"], k = 4
+Output: ["the","is","sunny","day"]
+Explanation: "the", "is", "sunny" and "day" are the four most frequent words, with the number of occurrence being 4, 3, 2 and 1 respectively.
+
+```
+
+**Constraints:**
+
+- `1 <= words.length <= 500`
+- `1 <= words[i].length <= 10`
+- `words[i]` consists of lowercase English letters.
+- `k` is in the range `[1, The number of **unique** words[i]]`
+
+**Follow-up:** Could you solve it in `O(n log(k))` time and `O(n)` extra space?
+
+---
+
+중요한건 `O(n log(k))이나 O(n)`으로 해결해야 함
+
+```python
+class Solution:
+    def topKFrequent(self, words: List[str], k: int) -> List[str]:
+        dic = {}
+        for word in words:
+            if word in dic:
+                dic[word] -= 1
+            else:
+                dic[word] = -1
+
+        heap = []
+        for key, value in dic.items():
+            heapq.heappush(heap, (value, key))
+
+        res = []
+        for i in range(0, k):
+            item = heapq.heappop(heap)
+            res.append(item[1])
+
+        return res
+```
+
+일전에 풀었던 문제에서 아이디어를 착용해서 count를 -로 가져가는 방법으로 해결함
+
+힙메모리에는 튜플타입으로 데이터를 넣어줌
+
+튜플과 리스트의 차이는??
