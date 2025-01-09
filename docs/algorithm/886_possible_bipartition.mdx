@@ -1,0 +1,377 @@
+---
+slug: 886_possible_bipartition
+title: 🚀 886. Possible Bipartition
+authors: [bundabergman]
+tags: [algorithm, graph]
+---
+
+[Possible Bipartition - LeetCode](https://leetcode.com/problems/possible-bipartition/)
+
+```sql
+Input: n = 4, dislikes = [[1,2],[1,3],[2,4]]
+Output: true
+Explanation: group1 [1,4] and group2 [2,3].
+```
+
+문제를 보면 리스트가 주어지고 함께 있을 수 없는 숫자들이 2차원 배열로 주어진다. 
+
+1은 2와 3과 함께 할 수 없고
+
+2는 1과 4와 함께 있을 수 없다
+
+주어지는 n개의 수를 위에 주어지는 리스트에 참고해서 두 그룹으로 나눠야 한다. 
+
+만약에 두그룹으로 나눠어지면 True 나누지 못하면 False이다. 
+
+---
+
+→ 해결방법을 처음 생각해보면
+
+일단 각 숫자들이 어떤 숫자와 함께 할 수 없는지를 딕셔너리 자료구조를 이용해서 정리했다.
+
+이제 이걸 배치해야 하는데 dictionary에서 for문을 돌면서 중복되는게 있는지 확인하는 코드를 작성했다. 
+
+```python
+from typing import List
+
+class Solution:
+    def possibleBipartition(self, n: int, dislikes: List[List[int]]) -> bool:
+        dislike_dic = {}
+        for dislike in dislikes:
+            item1 = dislike[0]
+            item2 = dislike[1]
+            if item1 in dislike_dic:
+                dislike_dic[item1].append(item2)
+            else:
+                dislike_dic[item1] = [item2]
+
+            if item2 in dislike_dic:
+                dislike_dic[item2].append(item1)
+            else:
+                dislike_dic[item2] = [item1]
+```
+
+- Code(잘못된 코드임)
+    
+    ```python
+    				
+    				group1 = set()
+            group2 = set()
+            for i in range(1, n + 1):
+                group_name = None
+                lst_dislike = []
+                if i in dislike_dic:
+                    lst_dislike = dislike_dic[i]
+                group_name = ''
+                for dislike in lst_dislike:
+                    if dislike in group1:
+                        if dislike in group2:
+                            return False
+                        if group_name == '':
+                            group_name = 'group2'
+                        elif group_name != 'group2':
+                            # could this element be in group2?
+                            if not self.could_be_in_another_group(dislike_dic, dislike, group2, group1):
+                                return False
+                            group_name = 'group2'
+                    elif dislike in group2:
+                        if dislike in group1:
+                            return False
+                        if group_name == '':
+                            group_name = 'group1'
+                        elif group_name != 'group1':
+                            if not self.could_be_in_another_group(dislike_dic, dislike, group1, group2):
+                                return False
+                            group_name = 'group1'
+                if group_name == '' or group_name == 'group1':
+                    group1.add(i)
+                else:
+                    group2.add(i)
+            return True
+    
+        def could_be_in_another_group(self, dislike_dic, dislike, from_group, to_group):
+            if dislike in dislike_dic:
+                lst_dislike = dislike_dic[dislike]
+                for dislike2 in lst_dislike:
+                    if dislike2 in from_group:
+                        if self.could_be_in_another_group(dislike_dic, dislike2, from_group, to_group):
+                            from_group.remove(dislike2)
+                            to_group.add(dislike2)
+                        else:
+                            return False
+            return True
+    ```
+    
+
+보면 알겠지만 별 난리를 다 부렸다. 
+
+코드가 너무 지저분해서 리펙토링 하다가
+
+Chat GPT에게 리팩토링을 부탁해 보았다. 
+
+- Code(잘못된 코드 리팩토링)
+    
+    ```python
+    			groups = [set(), set()]
+            for i in range(1, n + 1):
+                group_name = None
+                lst_dislike = dislike_dic.get(i, [])
+                group_name = ''
+                for dislike in lst_dislike:
+                    group_index = None
+                    if dislike in groups[0]:
+                        group_index = 0
+                    elif dislike in groups[1]:
+                        group_index = 1
+                    if group_index is not None:
+                        if group_name == '':
+                            group_name = group_index
+                        elif group_name != group_index:
+                            if not self.could_be_in_another_group(dislike_dic, dislike, groups[group_index], groups[group_index ^ 1]):
+                                return False
+                            group_name = group_index
+                if group_name == '':
+                    groups[0].add(i)
+                elif group_name == 0:
+                    groups[0].add(i)
+                else:
+                    groups[1].add(i)
+            return True
+    
+        def could_be_in_another_group(self, dislike_dic, dislike, from_group, to_group):
+            if dislike in dislike_dic:
+                lst_dislike = dislike_dic[dislike]
+                for dislike2 in lst_dislike:
+                    if dislike2 in from_group:
+                        if self.could_be_in_another_group(dislike_dic, dislike2, from_group, to_group):
+                            from_group.remove(dislike2)
+                            to_group.add(dislike2)
+                        else:
+                            return False
+            return True
+    ```
+    
+
+***오~~~ 잘한다 잘해***
+
+**결론은 ? 해결안됨**
+
+문제는 dictionary에서 for문을 돌다가 요소 하나가 10이라고 했을때 양쪽 그룹에 다들어갈 수 있는 경우에
+
+일단 하나의 그룹에 넣어두면 뒤에 22쯤 왔을때 일단 하나의 그룹에 넣어둔 10이 문제가 되고
+
+그럼 10을 다시 확인해서 다른 그룹에 넣어야 하는데 넣는다고 다가 아니라 1~22번까지 다시 확인해야 하는 문제가 생겼다. 
+
+~~**못풀었다 GG**~~ 😭
+
+ai에게 물어보니 답을 알려주는데 특정 알고리즘이 있단다… 
+
+이런 특정 알고리즘을 공부해야 하는가???
+
+그럼 이건 좀 제외하고 
+
+---
+
+다시 처음부터 생각하기로…
+
+(이번 문제는 어렵다 ㅠ.ㅠ)
+
+인수가 이렇게 주어졌을 때
+
+```python
+ Input: n = 4, dislikes = [[1,2],[1,3],[2,4]] 
+```
+
+1. 각 수별로 어떤수와 함께 할 수 없는지 확인
+2. 각 그룹별로 1과 함께 할 수 없는 수가 있는지 먼저 검사
+3. 현재 group1 = [ ] group2 = [ ]
+4. 둘다 가능하다면 group1 = [ 1 ]
+5. 다른 그룹에 1과 함께 할 수 없는 수인 2, 3을 반드시 넣어야함
+6. 2와 3이 함께 할 수 있는지 검사
+7. 2와 함께 할 수 없는 리스트 구하기
+8. 3과 함께 할 수 없는 리스트 구하기
+9. 각 리스트들 하나로 합치기
+10. 2와 3이 합쳐진 리스트 안에 있는지 확인하기
+    1. 가능하다면 2와 3은 한번에 group2에 들어간다. 
+11. 2와 3이 합쳐진 리스트 안에 있다면 return False
+12. 모든 for문이 다 돌아가면 자동으로 return True
+
+결과는 기존보다 못한 결과가….읔 또 틀림
+
+- 코드
+    
+    ```python
+    from typing import List
+    
+    class Solution:
+        def possibleBipartition(self, n: int, dislikes: List[List[int]]) -> bool:
+            dislike_dic = {}
+            for dislike in dislikes:
+                item1 = dislike[0]
+                item2 = dislike[1]
+                if item1 in dislike_dic:
+                    dislike_dic[item1].append(item2)
+                else:
+                    dislike_dic[item1] = [item2]
+    
+                if item2 in dislike_dic:
+                    dislike_dic[item2].append(item1)
+                else:
+                    dislike_dic[item2] = [item1]
+    
+            groups = [[], []]
+            joined_element = set()
+            for key in dislike_dic:
+                if key in joined_element:
+                    continue
+                else:
+                    joined_element.add(key)
+                lst_dislike = dislike_dic.get(key, [])
+                merge_set = set()
+                for dislike in lst_dislike:
+                    items = dislike_dic.get(dislike, [])
+                    for item in items:
+                        merge_set.add(item)
+                # 자기자신부터 먼저 검사
+                # dislike들이 함께 할 수 있는지 부터 검사함
+                for item in lst_dislike:
+                    if item in merge_set:
+                        return False
+                    joined_element.add(item)
+                # 만약 함께 할 수 있다면 어느 그룹으로 가야할지 검사
+                idx_group = 0
+                for item in groups[0]:
+                    if item in merge_set:
+                        idx_group = 1
+                        break
+                for item in groups[1]:
+                    if item in merge_set and idx_group == 1:
+                        return False
+                groups[idx_group].append(key)
+                # 상대방쪽에 있는 것들은 제외한다.
+                for dislike in lst_dislike:
+                    if dislike not in groups[idx_group]:
+                        groups[idx_group ^ 1].append(dislike)
+            return True
+    ```
+    
+
+---
+
+몇일을 짬짬이 생각날때마다 고민해봤는데 결국 Recursive를 사용해야 풀 수 있을 것 같았다. 
+
+결국 오늘도 실패하고… 읔
+
+알고리즘의 도움을 좀 받았다. ㅠ.ㅠ
+
+```python
+from typing import List
+
+class Solution:
+    def possibleBipartition(self, n: int, dislikes: List[List[int]]) -> bool:
+        dislike_dic = {}
+        for dislike in dislikes:
+            item1 = dislike[0]
+            item2 = dislike[1]
+            if item1 in dislike_dic:
+                dislike_dic[item1].append(item2)
+            else:
+                dislike_dic[item1] = [item2]
+
+            if item2 in dislike_dic:
+                dislike_dic[item2].append(item1)
+            else:
+                dislike_dic[item2] = [item1]
+
+        groups = {}
+        for n in range(1, n+1):
+            color = groups.get(n, -1)
+            if color == -1:
+                groups[n] = 0
+                if not self.coloring(groups, dislike_dic, n, 0):
+                    return False
+        return True
+    
+    def coloring(self, groups: dict, dislike_dic: dict, n: int, color: int):
+        coloring = color ^ 1
+        lst_dislike = dislike_dic.get(n, [])
+        for i in lst_dislike:
+            i_color = groups.get(i, -1)
+            if i_color == -1:
+                groups[i] = coloring
+                self.coloring(groups, dislike_dic, i, coloring)
+            elif i_color != coloring:
+                return False
+        return True
+```
+
+핵심코드는
+
+```python
+self.coloring(groups, dislike_dic, i, coloring)
+```
+
+이부분이다. 
+
+for문을 돌리면서 1부터 n까지 도는데 내가 선 coloring한 부분과 연관된 dislike는 전부 coloring처리 해줘야하고 일단 다 coloring 되면 다음 n인 2를 시작하는 것이다.
+
+for문과 recursive를 동시에 활용해서 해결해야 하는 문제이다.!!
+
+copilot 코드를 참고해서 짠 코드는 아래와 같다.
+
+```python
+class Solution:
+    def possibleBipartition(self, n: int, dislikes: List[List[int]]) -> bool:
+        lst_dislikes = [[] for _ in range(0, n+1)]
+        for a, b in dislikes:
+            lst_dislikes[a].append(b)
+            lst_dislikes[b].append(a)
+
+        colors = [-1 for _ in range(0, n+1)]
+        for n in range(1, n+1):
+            if colors[n] == -1 and not self.coloring(lst_dislikes, colors, n, 0):
+                return False
+        return True
+
+    def coloring(self, lst_dislikes: List[List[int]], colors:List[int], n: int, color: int):
+        if colors[n] != -1:
+            return colors[n] == color
+        colors[n] = color
+        for i in lst_dislikes[n]:
+            if not self.coloring(lst_dislikes, colors, i, color ^ 1):
+                return False
+        return True
+```
+
+훨씬 간단하고 빠르다.
+
+copilot원본은 아래와 같다.
+
+```python
+from typing import List
+
+class Solution:
+    def possibleBipartition(self, n: int, dislikes: List[List[int]]) -> bool:
+        lst_dislikes = [[] for _ in range(n)]
+        for i, j in dislikes:
+            lst_dislikes[i - 1].append(j - 1)
+            lst_dislikes[j - 1].append(i - 1)
+            
+        lst_color = [0] * n
+        for i in range(n):
+            if lst_color[i] == 0:
+                lst_color[i] = 1
+                if not self.dfs(lst_dislikes, lst_color, i):
+                    return False
+        return True
+    
+    def dfs(self, lst_dislikes, lst_color, i):
+        for j in lst_dislikes[i]:
+            if lst_color[j] == lst_color[i]:
+                return False
+            if lst_color[j] == 0:
+                lst_color[j] = -lst_color[i]
+                if not self.dfs(lst_dislikes, lst_color, j):
+                    return False
+        return True
+```
