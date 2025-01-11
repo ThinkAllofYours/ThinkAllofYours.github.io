@@ -6,64 +6,64 @@ tags: [algorithm, greedy]
 ---
 
 - **452. Minimum Number of Arrows to Burst Balloons**
-    
-    [Minimum Number of Arrows to Burst Balloons - LeetCode](https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/)
-    
-    ```
-    Input: points = [[10,16],[2,8],[1,6],[7,12]]
-    Output: 2
-    Explanation: The balloons can be burst by 2 arrows:
-    - Shoot an arrow at x = 6, bursting the balloons [2,8] and [1,6].
-    - Shoot an arrow at x = 11, bursting the balloons [10,16] and [7,12].
-    ```
-    
-    | 0 | 0 | 0 | 0 | 0 | 0 |  |  |
-    | --- | --- | --- | --- | --- | --- | --- | --- |
-    |  | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-    
-    points[1]과 poinst[2]는 이런 식으로 풍선이 배치되어 있고
-    
-    화살은 y축으로 무한히 날아감
-    
-    가장 적은 화살로 풍선을 터트려라
-    
-    특징 : X end ≤ X start 가 항상 참
-    
-    결국 풍선은 터트려야 하고 X end 기준으로 터트려 나가면 됨 왜냐하면 작은 수라도 풍선은 항상 터트려야 하기 때문에 
-    
-    **먼저 X end 기준으로 정렬한다.**
-    
-    chat GPT 에게[[x1, y1], [x2, y2]] 일때 y1, y2를 기준으로 정렬하려면 어떻게 해야하냐 물었더니
-    
-    ```python
-    lst = [[10,16],[2,8],[1,6],[7,12]]
-    sorted_lst = sorted(lst, key=lambda x: x[1])
-    print(sorted_lst)
-    ```
-    
-    이렇게 하면 된다고 한다. 
-    
-    key를 어떤 요소로 쓸 수 있는지 알려주면 됨
-    
-    ```python
-    from typing import List
-    
-    class Solution:
-        def findMinArrowShots(self, points: List[List[int]]) -> int:
-            if not points:
-                return 0
-            points = sorted(points, key=lambda x: x[1])
-            count = 1
-            end = points[0][1]
-            for i in range(1, len(points)):
-                if points[i][0] > end:
-                    count += 1
-                    end = points[i][1]
-            return count
-    ```
-    
-    답은 이와 같다. 매우 심플하다. 
-    
-    중요한것은 제일 앞에 있는 풍선은 언제 제일 마지막에 터트릴 수 있을까다.
-    
-    ← 끝 →
+
+[Minimum Number of Arrows to Burst Balloons - LeetCode](https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/)
+
+```
+Input: points = [[10,16],[2,8],[1,6],[7,12]]
+Output: 2
+Explanation: The balloons can be burst by 2 arrows:
+- Shoot an arrow at x = 6, bursting the balloons [2,8] and [1,6].
+- Shoot an arrow at x = 11, bursting the balloons [10,16] and [7,12].
+```
+
+| 0 | 0 | 0 | 0 | 0 | 0 |  |  |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+|  | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+
+points[1]과 poinst[2]는 이런 식으로 풍선이 배치되어 있고
+
+화살은 y축으로 무한히 날아감
+
+가장 적은 화살로 풍선을 터트려라
+
+특징 : X end ≤ X start 가 항상 참
+
+결국 풍선은 터트려야 하고 X end 기준으로 터트려 나가면 됨 왜냐하면 작은 수라도 풍선은 항상 터트려야 하기 때문에 
+
+**먼저 X end 기준으로 정렬한다.**
+
+chat GPT 에게[[x1, y1], [x2, y2]] 일때 y1, y2를 기준으로 정렬하려면 어떻게 해야하냐 물었더니
+
+```python
+lst = [[10,16],[2,8],[1,6],[7,12]]
+sorted_lst = sorted(lst, key=lambda x: x[1])
+print(sorted_lst)
+```
+
+이렇게 하면 된다고 한다. 
+
+key를 어떤 요소로 쓸 수 있는지 알려주면 됨
+
+```python
+from typing import List
+
+class Solution:
+    def findMinArrowShots(self, points: List[List[int]]) -> int:
+        if not points:
+            return 0
+        points = sorted(points, key=lambda x: x[1])
+        count = 1
+        end = points[0][1]
+        for i in range(1, len(points)):
+            if points[i][0] > end:
+                count += 1
+                end = points[i][1]
+        return count
+```
+
+답은 이와 같다. 매우 심플하다. 
+
+중요한것은 제일 앞에 있는 풍선은 언제 제일 마지막에 터트릴 수 있을까다.
+
+← 끝 →
