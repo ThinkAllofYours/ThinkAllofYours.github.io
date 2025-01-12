@@ -1,0 +1,85 @@
+---
+slug: 1962_remove_stones_to_minimize_the_total
+title: 🚀 1962. Remove Stones to Minimize the Total
+authors: [bundabergman]
+tags: [algorithm, remove-stones, minimize-the-total]
+---
+
+- **1962. Remove Stones to Minimize the Total**    
+    
+    [Remove Stones to Minimize the Total - LeetCode](https://leetcode.com/problems/remove-stones-to-minimize-the-total/)   
+    
+        
+    piles라는 스톤을 모아둔 리스트가 주어지고   
+    
+    
+  
+    k라는 int가 주어져서 k만큼 piles 스톤들을 뺄 수 있다. 예를들어   
+    
+    ```
+    Input: piles = [5,4,9], k = 2
+    Output: 12
+    Explanation: Steps of a possible scenario are:
+    - Apply the operation on pile 2. The resulting piles are [5,4,5].
+    - Apply the operation on pile 0. The resulting piles are [3,4,5].
+    The total number of stones in [3,4,5] is 12.
+    ```
+    
+    piles = [5,4,9] 여기서 9를 → 9 - floor(piles[i] / 2) 이렇게 할 수 있다. 
+    
+    문제는 that you can apply the operation on the **same** pile more than once.
+    
+    하나의 스톤에 여러 작업을 할 수 있다는 거다 그래서 정렬한다음 제일 큰값만 작업해주자 해서 
+    
+    코드를 짰다
+    
+    ```python
+    class Solution:
+        def minStoneSum(self, piles: List[int], k: int) -> int:
+            lst_piles = sorted(piles, reverse=True)
+            for i in range(0, k):
+                pile = lst_piles[0] // 2
+                lst_piles[0] -= pile
+                lst_piles = sorted(lst_piles, reverse=True)
+            return sum(lst_piles)
+    ```
+    
+    근데 웬걸 타임 리밋트가 걸리네..
+    
+    그럴줄 알았다… n log n 인데 n 값이 9만정도되면 타임리밋이 걸리더라
+    
+    어쨌건 매번 작업할 때 큰 수를 구해야 하는데
+    
+    그러면 결국 어떤 수가 크냐를 알아야 함
+    
+    그러면 항상 큰수가 가장 먼저오는 자료구조를 찾아야 했고 그게 heap메모리임
+    
+    이진데이터트리를 사용하면 되는데 python에서는 heap을 역순으로 정리하는건 없어서
+    
+    들어오는 데이터 값을 -로 변경해서 정렬
+    
+    ```python
+    import heapq
+    from typing import List
+    
+    class Solution:
+        def minStoneSum(self, piles: List[int], k: int) -> int:
+            heap = []
+            for item in piles:
+                heapq.heappush(heap, -item)
+            for _ in range(k):
+                pile = heapq.heappop(heap)
+                pile = pile * -1
+                pile -= pile//2
+                heapq.heappush(heap, -pile)
+            return -sum(heap)
+    
+    ```
+    
+    특이한 점은 
+    
+    5//2 == 2 인데
+    
+    -5//2 == -3 이다. 
+    
+    이점 주의해서 풀어야 할 듯
