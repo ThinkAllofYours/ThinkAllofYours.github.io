@@ -1,0 +1,153 @@
+---
+slug: 944_delete_columns_to_make_sorted
+title: 🚀 944. Delete Columns to Make Sorted
+authors: [bundabergman]
+tags: [algorithm, delete-columns-to-make-sorted]
+---
+
+[Delete Columns to Make Sorted - LeetCode](https://leetcode.com/problems/delete-columns-to-make-sorted/description/)
+
+간단보이는 문제다.
+
+문제 해석은 strs = ["abc", "bce", "cae"] 이렇게 값이 주어졌을때
+| a | b | c |
+| b | c | e |
+| c | a | e |
+
+세로로 a b c 는 정렬되어 있고
+
+세로로 b c a 는 정렬되어 있지 않다. 
+
+그래서 b c a 인 두번째 열은 지워야 하고 주어진 문자에서 총 몇개를 지워야 하냐?가 문제이다. 
+
+그래서 일단 브루트 포스로 풀었다. 
+
+```python
+class Solution:
+    def minDeletionSize(self, strs: List[str]) -> int:
+        del_col = 0
+        # strs[0][0] strs[1][0] str[2][0]
+        length = 0
+        if len(strs) > 0:
+            length = len(strs[0])
+        sorted_col = [[] for _ in range(0, len(strs[0]))]
+        for col in range(0, length):
+            for i in range(0, len(strs)):
+                sorted_col[col].append(strs[i][col])
+        for chars in sorted_col:
+            if chars != sorted(chars):
+                del_col += 1
+        return del_col
+```
+
+
+![](https://velog.velcdn.com/images/landr/post/b8893466-760f-4df5-b0ef-e18814faa3a1/image.png)
+속도가… 너무 안좋다. 자 더 빠르게 개선을 해보자
+
+```python
+class Solution:
+    def minDeletionSize(self, strs: List[str]) -> int:
+        del_col = 0
+        # strs[0][0] strs[1][0] str[2][0]
+        col_length = 0
+        if len(strs) > 0:
+            col_length = len(strs[0])
+        for col in range(0, col_length):
+            for i in range(0, len(strs)):
+                if i - 1 >= 0 and (strs[i][col] < strs[i - 1][col]):
+                    del_col += 1
+                    break
+        return del_col
+```
+
+어차피 한번은 돌아야 하는 for 문 안에서 한방에 끝내려 했다. 
+
+만족스럽군..🤔
+
+![](https://velog.velcdn.com/images/landr/post/4e4b4d9c-8880-4588-8d90-f7e69f397b2b/image.png)
+
+근데 더 느리다?
+메모리 사용양은 확실히 줄었는데 느린게 기분이 나쁘다
+
+Chat GPT에게 리팩토링을 시켰더니 더 깔끔하게 만들어줬다.
+(리팩토링은 더 잘하는것 같다.)
+
+```python
+class Solution:
+    def minDeletionSize(self, strs: List[str]) -> int:
+        deletions = 0
+        for col in range(len(strs[0])):
+            for i in range(1, len(strs)):
+                if strs[i][col] < strs[i-1][col]:
+                    deletions += 1
+                    break
+        return deletions
+```
+
+만약에 strs가 0보다 작아지면 어떻게 하냐고 했더니
+
+```python
+class Solution:
+    def minDeletionSize(self, strs: List[str]) -> int:
+				if not strs:
+				    return 0
+        deletions = 0
+        for col in range(len(strs[0])):
+            for i in range(1, len(strs)):
+                if strs[i][col] < strs[i-1][col]:
+                    deletions += 1
+                    break
+        return deletions
+```
+
+```python
+				if not strs:
+				    return 0
+```
+
+이걸 넣으면 되지 않냐고 하더라 훌륭하다. 
+나보다 더 깔끔하게 리팩토링 해줬다.
+
+속도개선을 물어봤더니
+
+```python
+class Solution:
+    def minDeletionSize(self, strs: List[str]) -> int:
+        deletions = 0
+        for col in range(len(strs[0])):
+            prev_char = strs[0][col]
+            for i in range(1, len(strs)):
+                if strs[i][col] < prev_char:
+                    deletions += 1
+                    break
+                prev_char = strs[i][col]
+        return deletions
+```
+
+이렇게 만들어줬다. 
+
+음… 이건 결국 내 코드랑 속도차이는 크지 않을 것 같다. 
+
+그래서 문제를 풀어달라 했다. 
+
+그랬더니 풀어준 답은 이것과 같다. 
+
+```python
+def minDeletionSize(strs):
+    deletions = 0
+    for col in range(len(strs[0])):
+        for i in range(1, len(strs)):
+            if strs[i][col] < strs[i-1][col]:
+                deletions += 1
+                break
+    return deletions
+```
+
+위에 리팩토링한 답과 같다. 
+
+흠… 결국 학습된 데이터에 의해서 답을 주는거라 한계가 있나?
+
+나중에 4.0 버전이 나오면 더 향상된 답을 주려나?
+궁금하긴하다.
+
+(PS. 다른 사람들이 푼 것들도 위에 답과 유사하다는 것을 알 수 있었다.) 
