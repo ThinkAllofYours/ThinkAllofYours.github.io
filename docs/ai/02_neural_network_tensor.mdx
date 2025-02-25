@@ -1,0 +1,162 @@
+
+
+## PyTorch를 이용한 신경망
+
+딥러닝 네크워크를 수백계의 계층까지 거대해지는 경향이 있어서 deeplearning 이라고 불리고 있는데 
+가중치 행렬만 사용해 구축을 할 수는 있지만 매우 복잡함으로 PyTorch를 사용해서 크고 효율적인 
+신경망을 구축하는게 좋은 방법
+
+### 간단한 PyTorch 사용법 
+
+예시는 MNIST 데이터셋을 이용한 손글씨 분류 모델 구축
+
+### 소프트 맥스 함수란?
+
+갑자기 소프트 맥스 함수가 나왔는데 이는 다중 분류 문제에서 매우 중요한 역할을 하는 함수 
+- 1. 소프트맥스 함수란?
+-- 소프트맥스 함수는 입력받은 값들을 0과 1 사이의 확률 값으로 변환해주는 함수
+-- 이렇게 반환된 값들의 총합은 항상 1됨
+-- 딥러닝에서 소프트맥스 함수는 출력층에서 사용
+
+- 2. 소프트맥스 함수, 왜 사용할까?
+-- 여러 개의 선택지 중에서 정답을 고르는 다중 클래스 분류 문제(예를 들어 사진으로 어떤 자동차인지 판단하는 등의 문제)
+-- 각 선택지가 정답일 확률을 0과 1사이의 값으로 보여줌
+-- 가장 높은 확률 값을 가진 선택지를 정답으로 선택할 수 있도록 도와줌
+
+- 3. 소프트맥스 함수, 어떻게 작동하나?
+-- 입력된 값들을 지수함수에 통과시켜 양수로 변환
+-- 변환된 값들을 모두 더한 후, 각 값을 총합으로 나눠줌
+-- → 이렇게 하면 각 값은 0과 1 사이의 값을 가지며, 모든 값의 합은 1이 됨
+
+- 4. 소프트맥스 함수의 장점은?
+-- 출력 값을 확률로 해석 할 수 있음
+-- 출력 값의 번위가 [0, 1]로 제한되어 있어, 출력 값의 스케일이 통일되어 안정적인 학습이 가능함
+-- 미분 가능한 함수여서, 역전파 알고리즘에 사용가능
+
+- 5. 소프트맥스 함수와 시그모이드 함수의 차이점은 무엇인가요?
+-- 시그모이드 함수는 0과 1 사이의 값을 출력하는 반면, 소프트맥스 함수는 여러개의 값을 입력받아 각각 0과 1사이의 확률 값으로 변환
+-- 시그모이드 함수는 주로 이진 분류 문제에 사용되고, 소프트맥스 함수는 다중 분류 문제에 사용됨
+
+- 6. 소프트맥스 함수를 더 쉽게 설명하면?
+-- 소프트맥스 함수를 더 쉽게 설명하자면 일반적인 확률을 계산하는 것
+-- 예를 들어 문뒤에 토끼가 있고 3개의 문에 반드시 하나의 토끼가 있다면 우리는 각 문에 대해 토기가 존재할 확률이 1/3 이라고 말하는데
+-- 이와 같이 소프트맥스 함수도 (각 출력 값) / (모든 출력 값을 더한 것) 임, 각 출력에 대해서 확률을 계산할 수 있을 것이고
+-- 그 차이를 극단적으로 내기 위한 것이 소프트맥스 함수
+
+$$
+\Large \sigma(x_i) = \cfrac{e^{x_i}}{\sum_k^K{e^{x_k}}}
+$$
+
+- 7. 이를 코드로 전환하면 
+
+```python
+def softmax(x):
+    return torch.exp(x) / torch.sum(torch.exp(x), dim=1).view(-1, 1)
+```
+
+* `def softmax(x):`: 함수 이름은 `softmax`이며, 입력으로 벡터 또는 행렬 `x`를 받습니다.
+* `torch.exp(x)`: 입력 `x`의 각 요소에 대해 지수함수($e^x$)를 적용합니다. 이는 입력 값들을 양수로 만들어주고, 큰 값은 더 크게, 작은 값은 더 작게 만들어 데이터 간 편차를 크게 해줍니다.
+* `torch.sum(torch.exp(x), dim=1)`: 각 행(dim=1)별로 지수함수가 적용된 값들을 모두 더합니다.
+* `.view(-1, 1)`: 각 행의 합을 열벡터 형태로 변환합니다.
+* `torch.exp(x) / torch.sum(torch.exp(x), dim=1).view(-1, 1)`: 각 요소의 지수함수 값을 해당 행의 모든 요소의 지수함수 값의 합으로 나눕니다.
+
+*소프트맥스 함수의 역할*
+
+소프트맥스 함수는 주로 신경망의 출력층에서 사용되며, 다음과 같은 역할을 수행합니다.
+
+* **다중 클래스 분류**: 입력받은 데이터를 여러 개의 클래스로 분류할 때 각 클래스에 속할 확률을 계산합니다.
+* **확률 분포 생성**: 소프트맥스 함수의 출력은 각 클래스에 대한 확률 분포를 나타내므로, 가장 높은 확률 값을 가진 클래스를 선택하여 데이터를 분류할 수 있습니다.
+
+#### 예시
+
+```python
+import torch
+
+x = torch.tensor([[2.0, 1.0, 0.5], [0.5, 2.0, 1.0]])
+y = softmax(x)
+print(y)
+```
+
+위 코드를 실행하면 다음과 같은 결과가 출력됩니다.
+
+```
+tensor([[0.7000, 0.2000, 0.1000],
+        [0.1000, 0.7000, 0.2000]])
+```
+
+이는 입력 데이터 `x`의 각 행에 대해 소프트맥스 함수를 적용한 결과이며, 각 행의 값은 해당 데이터가 각 클래스에 속할 확률을 나타냅니다.
+
+
+### 전체적인 코드 흐름
+
+```python
+
+# 필요한 라이브러리 임포트
+import torch
+import torch.nn as nn
+
+from torchvision import datasets, transforms
+
+# 데이터 전처리 설정
+transform = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize((0.5,), (0.5,))
+])
+
+# MNIST 데이터셋 로드
+train_dataset = datasets.MNIST(root='./data/MNIST_data', train=True, transform=transform, download=True)
+trainloader = torch.utils.data.DataLoader(train_dataset, batch_size=64, shuffle=True)
+
+# 시그모이드 활성화 함수 정의
+def sigmoid(x):
+    return 1 / (1 + torch.exp(-x))
+
+# 입력 이미지를 1차원 벡터로 평탄화
+inputs = images.view(images.shape[0], -1) 
+
+# 가중치와 편향 텐서 생성
+w1 = torch.randn(784, 256)
+b1 = torch.randn(256)
+
+w2 = torch.randn(256, 10)
+b2 = torch.randn(10)
+
+# 은닉층계산 (시그모이드 활성화 함수 적용)
+h = sigmoid(torch.mm(inputs, w1) + b1)
+
+# 출력층 계산 (시그모이드 활성화 함수 적용)
+out = sigmoid(torchmm(h, w2), + b2)
+
+def softmax(x):
+    return torch.exp(x) / torch.sum(torch.exp(x), dim=1).view(-1, 1)
+
+probabilities = softmax(out)
+
+print(probabilities.shape)
+
+print(probabilities.sum(dim=1))
+```
+
+## 파이토치로 네트워크 만들기
+
+동일한 코드를 PyTorch의 nn 을 사용해 구축하는 방법 
+```python
+class Network(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+        self.hidden = nn.Linear(784, 256)
+        self.output = nn.Linear(256, 10)
+
+        self.sigmoid = nn.Sigmoid()
+        self.softmax = nn.Softmax(dim=1)
+
+    def forward(self, x):
+        x = self.hidden(x)
+        x = self.sigmoid(x)
+        x = self.output(x)
+        x = self.softmax(x)
+
+        return x
+```
+
