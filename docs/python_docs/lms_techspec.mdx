@@ -1,0 +1,231 @@
+---
+sidebar_position: 1
+title: 신규프로젝트 기술 분석
+---
+
+## FastLMS 기술 분석
+
+이 문서는 FastLMS 프로젝트에서 사용된 주요 기술들과 그 사용 예시를 정리한 것입니다.
+
+## 백엔드 기술
+
+### FastAPI
+
+- **설명**: Python 기반의 고성능 웹 프레임워크
+- **사용 사례**:
+  - `main.py`에서 API 엔드포인트 정의 및 라우팅 설정
+  - 미들웨어 설정 (CORS, 언어 등)
+  - 의존성 주입 시스템으로 세션, 인증 등 구현
+
+  ```python
+  app = FastAPI(
+      title="Fastlms",
+      description="Fastlms is a headless learning management system.",
+      version="2.0.0",
+      docs_url="/api/v2/docs",
+      openapi_url="/api/v2/openapi.json",
+      dependencies=[Depends(login_required)]
+  )
+  ```
+
+### SQLAlchemy (ORM)
+
+- **설명**: Python 기반의 SQL 툴킷 및 ORM(Object-Relational Mapping)
+- **사용 사례**:
+  - 데이터베이스 테이블 모델링 (`account/model.py` 등)
+  - 관계형 데이터베이스 추상화 및 쿼리 작성
+
+  ```python
+  class User(TimestampedMixin, IdBase):
+      __tablename__ = "account_user"
+
+      username: Mapped[str] = mapped_column(String(100), unique=True)
+      email: Mapped[EmailStr] = mapped_column(String(255), unique=True)
+
+      # relations
+      login_histories: Mapped[list["LoginHistory"]] = relationship(
+          "LoginHistory",
+          order_by="desc(LoginHistory.created)",
+      )
+  ```
+
+  - 비동기 ORM 세션 관리
+
+  ```python
+  engine = create_async_engine(settings.DATABASE_URL, echo=True, future=True)
+  AsyncSessionLocal = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+  ```
+
+### JWT (JSON Web Token)
+
+- **설명**: 인증 및 정보 교환을 위한 안전한 방법
+- **사용 사례**:
+  - 사용자 인증 및 세션 관리 (`account/auth.py`)
+  - 액세스 토큰과 리프레시 토큰 발급
+
+  ```python
+  def generate_token(user_id: str, kind: TokenKind):
+      now = timezone_now()
+      delta = settings.ACCESS_TOKEN_EXPIRE if kind == "access" else settings.REFRESH_TOKEN_EXPIRE
+      expire = (now + timedelta(minutes=delta)).replace(microsecond=0)
+      payload = {"sub": user_id, "exp": expire, "iat": now}
+      return jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256"), expire
+  ```
+
+### Pydantic
+
+- **설명**: 데이터 유효성 검사 및 설정 관리 라이브러리
+- **사용 사례**:
+  - API 요청/응답 스키마 정의 (`account/schema.py`, `account/api.py` 등)
+  - 환경 설정 관리 (`config.py`)
+
+  ```python
+  class UserResponse(BaseUserModel):
+      email: EmailStr
+      birthdate: datetime | None
+      description: str
+      created: datetime
+      last_authed: datetime | None = None
+      use_emon: bool
+  ```
+
+### AWS S3 / Boto3
+
+- **설명**: Amazon S3 스토리지 서비스와 Python SDK
+- **사용 사례**:
+  - 파일 업로드 및 관리 (`base/storage.py`)
+  - 프로필 이미지, 업로드 파일 등 저장
+
+  ```python
+  class S3Client:
+      def __init__(self):
+          self.client = boto3.client(
+              "s3",
+              aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+              aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+              endpoint_url=settings.AWS_S3_ENDPOINT_URL,
+              config=Config(signature_version="s3v4"),
+          )
+          self.bucket_name = settings.AWS_STORAGE_BUCKET_NAME
+  ```
+
+  - 프리사인드 URL 생성
+
+  ```python
+  def generate_presigned_url(self, filename: str, content_type: str, path_prefix: str, expires_in: int = 3600):
+      full_path = os.path.join(path_prefix, filename)
+      response = self.client.generate_presigned_url(
+          "put_object",
+          Params={"Bucket": self.bucket_name, "Key": full_path, "ContentType": content_type},
+          ExpiresIn=expires_in,
+          HttpMethod="PUT",
+      )
+      return response
+  ```
+
+### OpenSearch
+
+- **설명**: 검색 및 분석 엔진
+- **사용 사례**:
+  - 비디오 컨텐츠 및 자막 인덱싱 (`search/opensearch_indexer.py`)
+  - 전체 텍스트 검색 및 자동완성 기능
+
+  ```python
+  async def update_video_index(target):
+      await client.update(
+          index="video",
+          id=target.id,
+          body={
+              "doc": {
+                  "video_id": target.id,
+                  "title": target.title,
+                  "description": target.description,
+                  "thumbnail": target.thumbnail,
+                  "suggest": {
+                      "input": clean_autocomplete_word(target.title + " " + target.description),
+                      "weight": 1,
+                  },
+              },
+              "doc_as_upsert": True,
+          },
+          params={"retry_on_conflict": 3},
+      )
+  ```
+
+  - SQLAlchemy 이벤트와 연동하여 자동 인덱싱
+
+  ```python
+  def init_opensearch_indexer():
+      event.listen(Subtitle, "after_insert", update_index)
+      event.listen(Subtitle, "after_update", update_index)
+      event.listen(Video, "after_insert", update_index)
+      event.listen(Video, "after_update", update_index)
+  ```
+
+### Alembic (데이터베이스 마이그레이션)
+
+- **설명**: SQLAlchemy 기반 데이터베이스 마이그레이션 도구
+- **사용 사례**:
+  - 데이터베이스 스키마 버전 관리
+  - 자동 마이그레이션 스크립트 생성
+
+### Passlib
+
+- **설명**: 비밀번호 해싱 및 검증 라이브러리
+- **사용 사례**:
+  - 사용자 비밀번호 암호화 (`account/model.py`)
+
+  ```python
+  pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+  def verify_password(self, plain_password: str) -> bool:
+      return pwd_context.verify(plain_password, self._hashed_password)
+
+  @classmethod
+  def get_password_hash(cls, password: str) -> str:
+      return pwd_context.hash(password)
+  ```
+
+### Taskiq & Background Tasks
+
+- **설명**: 백그라운드 작업 처리 라이브러리
+- **사용 사례**:
+  - 이메일 발송 등 비동기 작업 처리
+
+  ```python
+  @public_router.post("/user")
+  async def create_user(session: SessionDep, data: UserCreateRequest, request: Request, tasks: BackgroundTasks):
+      user = User(**data.model_dump(exclude={"email_verification_url"}))
+      session.add(user)
+      await session.commit()
+      _send_email_verification_email(user, request, data.email_verification_url, tasks)
+  ```
+
+### itsdangerous
+
+- **설명**: 데이터에 서명하여 신뢰할 수 있는 정보 생성 라이브러리
+- **사용 사례**:
+  - 이메일 인증 및 비밀번호 재설정 토큰 생성 (`account/model.py`)
+
+  ```python
+  def generate_password_reset_token(self) -> str:
+      return URLSafeTimedSerializer(settings.SECRET_KEY).dumps(self.id)
+
+  @classmethod
+  def verify_password_reset_token(cls, token: str) -> str | None:
+      try:
+          return URLSafeTimedSerializer(settings.SECRET_KEY).loads(token, max_age=settings.PASSWORD_RESET_TIMEOUT)
+      except SignatureExpired:
+          raise Exception("Token has expired")
+  ```
+
+## 인프라 기술
+
+### Docker & Docker Compose
+
+- **설명**: 컨테이너화 기술 및 다중 컨테이너 애플리케이션 관리
+- **사용 사례**:
+  - 개발 및 배포 환경 구축 (`Dockerfile`, `docker-compose-dev.yml`)
+  - 서비스 격리 및 확장성 제공
+
+이 문서는 FastLMS 프로젝트에서 사용된 주요 기술들을 분석했습니다. 더 많은 라이브러리와 도구들이 사용되고 있으며, 필요에 따라 문서를 확장할 수 있습니다.
