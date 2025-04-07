@@ -1,0 +1,89 @@
+---
+slug: sigleton-design-pattern
+title: 🏭 팩토리 메서드 패턴
+authors: [bundabergman]
+tags: [design-pattern, creational]
+---
+
+## 싱글톤 디자인 패턴
+
+## 모듈 레벨 싱글톤 (가장 Pythonic한 방법)
+
+- 파이썬 모듈은 기본적으로 싱글톤처럼 동작합니다. 모듈은 프로그램 내에서 최초 import 시 단 한 번만 로드되고 초기화됩니다.
+
+- 따라서 모듈 자체를 싱글톤 인스턴스처럼 사용하거나, 모듈 내에 필요한 객체나 변수를 정의하고 이를 공유하는 방식이 가장 간단하고 파이썬다운 방법으로 여겨집니다.
+
+```python
+# config.py (모듈 파일)
+_db_connection = None # 예시: DB 연결 객체 (실제로는 연결 로직 필요)
+_settings = {"theme": "dark", "version": "1.0"}
+
+def get_db_connection():
+    global _db_connection
+    if _db_connection is None:
+        print("Creating DB connection...")
+        # 실제 DB 연결 로직
+        _db_connection = "Connected DB Object"
+    return _db_connection
+
+def get_setting(key):
+    return _settings.get(key)
+
+def update_setting(key, value):
+    _settings[key] = value
+
+# main.py (사용하는 다른 파일) ########## 여기는 다른 파일 ##########
+import config # config 모듈을 임포트
+
+conn1 = config.get_db_connection()
+conn2 = config.get_db_connection() # "Creating DB connection..."은 한 번만 출력됨
+
+print(f"conn1 is conn2: {conn1 is conn2}") # 출력: conn1 is conn2: True
+
+print(config.get_setting("theme")) # 출력: dark
+config.update_setting("theme", "light")
+print(config.get_setting("theme")) # 출력: light
+```
+
+### 사실 다른 패턴은 알필요 없지만 그래도 한번 작성해봅니다.
+
+## __new__ 메소드를 이용한 방법
+
+- 클래스의 __new__ 메소드는 __init__ 보다 먼저 호출되어 객체 생성을 제어합니다.
+
+- 클래스 변수에 인스턴스를 저장하고, __new__ 메소드에서 인스턴스가 이미 생성되었는지 확인하여 기존 인스턴스를 반환하거나 새로 생성합니다.
+
+```python
+class SingletonClass:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            print("Creating new instance")
+            # 새 인스턴스 생성 (super() 사용)
+            cls._instance = super().__new__(cls)
+            # 여기서 추가 초기화가 필요하면 할 수 있지만, __init__에서 하는 것이 일반적
+        else:
+            print("Returning existing instance")
+        return cls._instance
+
+    def __init__(self, data):
+        # __init__은 __new__가 인스턴스를 반환할 때마다 호출될 수 있으므로 주의 필요
+        # 아래처럼 초기화가 한 번만 되도록 방어 코드를 넣는 경우가 많음
+        if not hasattr(self, '_initialized'):
+            print(f"Initializing instance with data: {data}")
+            self.data = data
+            self._initialized = True
+        else:
+            print(f"Instance already initialized (data: {self.data})")
+
+
+# 사용 예시
+s1 = SingletonClass("Data 1")
+print(f"s1 data: {s1.data}")
+
+s2 = SingletonClass("Data 2") # __new__는 기존 인스턴스를 반환하지만, __init__은 또 호출됨
+print(f"s2 data: {s2.data}") # 출력: s2 data: Data 1 (s1과 같은 객체이므로 data가 바뀌지 않음)
+
+print(f"s1 is s2: {s1 is s2}") # 출력: s1 is s2: True
+```
