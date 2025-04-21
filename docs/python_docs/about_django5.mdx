@@ -1,0 +1,98 @@
+---
+slug: about-django5
+title: 📚 Django 5의 대략적인 모든것
+authors: [bundabergman]
+tags: [django, python, web-development]
+---
+
+## Django는 누가 만들었나?
+
+Django는 빠르게 변화하는 뉴스룸 환경에서 개발되었기 때문에 일반적인 웹 개발 작업을 빠르고 쉽게 수행할 수 있도록 설계되었습니다
+
+## Django 모델 설계
+
+#### Django 모델 간단한 예시
+
+```python
+from django.db import models
+
+class Reporter(models.Model):
+    full_name = models.CharField(max_length=70)
+
+    def __str__(self):
+        return self.full_name
+
+
+class Article(models.Model):
+    pub_date = models.DateField()
+    headline = models.CharField(max_length=200)
+    content = models.TextField()
+    reporter = models.ForeignKey(Reporter, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.headline
+```
+
+## Django의 핵심 Django shell
+
+Django shell은 Django 프로젝트에서 모델을 쉽게 조작할 수 있는 편리한 도구입니다. 이를 통해 모델을 쉽게 조회하고 수정할 수 있습니다.
+
+```bash
+python manage.py shell
+
+# Import the models we created from our "news" app
+>>> from news.models import Article, Reporter
+
+# No reporters are in the system yet.
+>>> Reporter.objects.all()
+<QuerySet []>
+```
+
+실제로 모델을 설계하고 임포트해서 테스트 해볼 때도 사용되고 디거빙이나 긴급 수정에서도 활용할 수 있습니다. 
+
+- Django 에서 스크립트를 실행할 수 있는데 
+```python 
+# my_script.py 파일 작성
+# my_script.py
+from myapp.models import MyModel
+from django.utils import timezone
+
+print("Updating status for objects created before today...")
+count = MyModel.objects.filter(created_at__lt=timezone.now().date()).update(status='archived')
+print(f"{count} objects updated.")
+
+python manage.py shell < my_script.py
+```
+
+이렇게 하면 스크립트 내용이 Django 환경에서 순차적으로 실행됨
+
+Django에서 settings.py 파일을 여러 환경(개발, 운영 등)으로 나누어 관리할 때, python manage.py shell 명령어가 어떤 설정 파일을 로드할지는 DJANGO_SETTINGS_MODULE 환경 변수에 의해 결정
+
+예를들어 파일 구조가 아래와 같다면?
+
+```bash
+myproject/
+├── manage.py
+└── myproject/
+    ├── __init__.py
+    ├── settings/
+    │   ├── __init__.py  # 이 파일은 비어있거나 기본 설정을 임포트
+    │   ├── base.py      # 공통 기본 설정
+    │   ├── development.py # 개발 환경 설정 (base.py 임포트 및 재정의)
+    │   └── production.py  # 운영 환경 설정 (base.py 임포트 및 재정의)
+    ├── urls.py
+    └── wsgi.py
+```
+
+이 파일들이 기본 settings.py나 base.py를 상속받는 구조라면, 
+
+Shell을 실행할 때 명시적으로 DJANGO_SETTINGS_MODULE 환경 변수를 설정해주어야 해당 환경의 설정이 적용
+
+
+### URL 설계되었습니
+
+Django는 아름다운 URL 설계를 장려하며 URL에 .php 나 .asp 같은 불필요한 내용들을 넣지 않습니다.
+(JAVA 공화국인 대한민국에서는 .do 와 같은 것들을 자주 볼 수 있습니다)
+
+
+
