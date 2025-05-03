@@ -134,7 +134,7 @@ def slow_function(n):
 slow_function(1) # 출력: Function slow_function took 1.xxxx seconds
 
 # 내부에서는 아래 처럼 동작함
-func = measure_time(slow_function)
+slow_function = measure_time(slow_function)
 ```
 
 ## 4. 비동기 프로그래밍 (Asyncio)
