@@ -1,0 +1,430 @@
+---
+slug: django-best-practice
+title: 📚 Django 내부 동작 원리와 Best Practice
+authors: [bundabergman]
+tags: [django]
+---
+
+## 1. Django ORM (쿼리셋 최적화)
+
+Django ORM(Object-Relational Mapper)은 데이터베이스와 객체 지향 프로그래밍 언어 간의 호환되지 않는 데이터를 변환하는 프로그래밍 기법입니다. ORM을 사용하면 SQL 쿼리를 직접 작성하지 않고도 파이썬 코드로 데이터베이스와 상호작용할 수 있습니다. 하지만 ORM을 효율적으로 사용하지 않으면 성능 문제가 발생할 수 있으며, 특히 **N+1 문제**가 대표적입니다.
+
+### N+1 문제란?
+
+N+1 문제는 하나의 쿼리로 가져올 수 있는 데이터를 N개의 추가 쿼리를 통해 가져오는 비효율적인 상황을 말합니다. 예를 들어, 게시글 목록을 가져온 후 각 게시글의 작성자 정보를 가져오기 위해 게시글 수만큼 추가 쿼리가 발생하는 경우입니다.
+
+```python
+# N+1 문제 발생 예시
+posts = Post.objects.all()  # 게시글 목록 가져오기 (쿼리 1회)
+for post in posts:
+    print(post.author.username)  # 각 게시글의 작성자 정보 접근 시마다 쿼리 발생 (N회)
+```
+
+이러한 N+1 문제를 해결하기 위해 Django ORM은 select_related와 prefetch_related라는 두 가지 주요 최적화 도구를 제공합니다.
+
+### select_related
+select_related는 정방향 ForeignKey 또는 OneToOneField 관계의 객체들을 SQL JOIN을 사용하여 한 번의 쿼리로 가져옵니다. 즉, 관련된 객체들을 "선택적으로" 미리 로드하여 추가 쿼리 발생을 방지합니다.
+
+**사용 시점:**
+* 하나의 객체와 관련된 다른 하나의 객체를 가져올 때 (One-to-One, Foreign Key)
+* JOIN으로 인해 쿼리 결과의 크기가 너무 커지지 않을 때
+
+**사용법:**
+```python
+# Post 모델이 author라는 ForeignKey 필드를 가지고 있다고 가정
+posts = Post.objects.select_related('author').all()
+for post in posts:
+    print(post.author.username) # 추가 쿼리 발생 안 함
+```
+
+**주의사항:**
+* ManyToManyField나 역방향 ForeignKey 관계에는 사용할 수 없습니다. (prefetch_related 사용)
+* 너무 많은 JOIN은 오히려 성능을 저하시킬 수 있으므로 필요한 관계만 지정해야 합니다.
+
+### prefetch_related
+prefetch_related는 ManyToManyField 또는 역방향 ForeignKey 관계, 그리고 GenericForeignKey 관계의 객체들을 별도의 쿼리로 가져온 후 파이썬 레벨에서 조인합니다. 즉, 관련된 객체들을 "미리 가져와서" 연결합니다.
+
+**사용 시점:**
+* 하나의 객체와 관련된 여러 객체를 가져올 때 (Many-to-Many, 역방향 Foreign Key)
+* select_related를 사용할 수 없는 관계일 때
+
+**사용법:**
+```python
+# Post 모델에 'tags'라는 ManyToManyField가 있고, User 모델이 'posts'라는 역방향 관계를 가지고 있다고 가정
+posts = Post.objects.prefetch_related('tags').all()
+for post in posts:
+    print([tag.name for tag in post.tags.all()]) # 추가 쿼리 발생 안 함 (tags에 대해)
+
+users = User.objects.prefetch_related('post_set').all() # User와 관련된 Post들을 미리 가져옴
+for user in users:
+    print([p.title for p in user.post_set.all()]) # 추가 쿼리 발생 안 함
+```
+
+**Prefetch 객체 활용:**
+prefetch_related는 Prefetch 객체를 사용하여 미리 가져올 데이터에 대한 세부적인 제어(예: 특정 조건의 데이터만 가져오거나, 정렬 순서 지정)가 가능합니다.
+```python
+from django.db.models import Prefetch
+
+# 특정 조건에 맞는 태그만 미리 가져오기
+posts = Post.objects.prefetch_related(
+    Prefetch('tags', queryset=Tag.objects.filter(is_active=True))
+).all()
+```
+
+**Best Practice:**
+* 템플릿이나 코드에서 관련된 객체의 속성에 반복적으로 접근해야 한다면 select_related 또는 prefetch_related 사용을 적극적으로 고려합니다.
+* Django Debug Toolbar와 같은 도구를 사용하여 실행되는 쿼리 수를 확인하고 N+1 문제를 진단합니다.
+* 필요한 필드만 가져오기 위해 `only()` 또는 `defer()`를 함께 사용하는 것을 고려합니다. (단, `select_related`와 함께 사용할 때 주의. `select_related`로 가져온 필드도 `only`에 명시해야 함)
+* `values()`나 `values_list()`를 사용하여 딕셔너리나 튜플 형태로 데이터를 가져오면 ORM 객체 생성 비용을 줄일 수 있지만, 이 경우 `select_related`나 `prefetch_related`의 효과를 직접적으로 누리기 어렵습니다. (대신 `annotate` 등을 활용)
+
+### 기타 최적화 기법
+* **only() 및 defer():** 모델 인스턴스를 가져올 때 특정 필드만 즉시 로드하거나 특정 필드의 로드를 지연시킵니다.
+```python
+# 'title'과 'author' 필드만 즉시 로드
+posts = Post.objects.only('title', 'author').all()
+
+# 'content' 필드는 나중에 접근할 때 로드
+posts = Post.objects.defer('content').all()
+```
+
+* **values() 및 values_list():** 쿼리셋 결과를 딕셔너리 또는 튜플 리스트로 반환하여 ORM 객체 생성 오버헤드를 줄입니다. 특정 필드만 선택할 때 유용합니다.
+```python
+# 제목만 딕셔너리 리스트로 가져오기
+titles = Post.objects.values('title')
+
+# 제목과 작성자 ID만 튜플 리스트로 가져오기
+data = Post.objects.values_list('title', 'author_id')
+```
+
+* **count():** 객체의 수를 셀 때 `len(queryset)` 대신 `queryset.count()`를 사용합니다. `count()`는 데이터베이스 수준에서 효율적으로 개수를 계산합니다.
+* **exists():** 특정 조건을 만족하는 객체가 하나라도 존재하는지 확인할 때 `queryset.exists()`를 사용합니다. 전체 객체를 가져오지 않고 존재 여부만 확인하므로 효율적입니다.
+* **update() 및 delete():** 여러 객체를 한 번에 업데이트하거나 삭제할 때 쿼리셋의 `update()` 또는 `delete()` 메서드를 사용하면 개별 객체를 로드하고 저장하는 과정을 생략하여 효율적입니다. (단, 모델의 `save()`, `delete()` 메서드나 관련 시그널이 호출되지 않음에 유의)
+```python
+# is_published가 False인 모든 게시글을 True로 변경
+Post.objects.filter(is_published=False).update(is_published=True)
+```
+
+* **annotate() 및 aggregate():** 데이터베이스 수준에서 집계 연산(평균, 합계, 개수 등)을 수행합니다.
+```python
+from django.db.models import Count, Avg
+# 각 카테고리별 게시글 수 계산
+Category.objects.annotate(num_posts=Count('post'))
+# 모든 게시글의 평균 평점 계산
+Post.objects.aggregate(avg_rating=Avg('rating'))
+```
+
+* **인덱싱 (Indexing):** 자주 검색되는 필드에 데이터베이스 인덱스를 생성하여 조회 성능을 향상시킵니다. 모델 필드 옵션에서 `db_index=True`를 설정하거나 `Meta` 클래스에 `indexes`를 정의합니다.
+```python
+class Post(models.Model):
+    title = models.CharField(max_length=200, db_index=True) # 필드에 직접 인덱스 설정
+    # ...
+    class Meta:
+        indexes = [
+            models.Index(fields=['created_at']), # created_at 필드에 인덱스 생성
+        ]
+```
+
+* **데이터베이스 연결 관리:** 지속적인 연결(Persistent connections)을 사용하여 매 요청마다 새로운 연결을 생성하는 오버헤드를 줄일 수 있습니다. (Django 3.1부터 `CONN_MAX_AGE` 기본값이 0이 아닌 300으로 변경되어 기본적으로 활성화)
+
+## 2. 미들웨어 (Middleware)
+미들웨어는 Django의 요청/응답 처리 과정에 개입하여 전역적인 기능을 추가할 수 있는 "훅(hook)" 또는 "플러그인" 시스템입니다. 각 미들웨어 컴포넌트는 요청을 처리하거나 응답을 반환하기 전에 특정 작업을 수행할 수 있습니다.
+
+### 미들웨어의 동작 원리
+Django 서버가 요청을 받으면, `settings.py`에 정의된 `MIDDLEWARE` 설정에 따라 순서대로 미들웨어를 통과합니다.
+
+* **요청 단계 (Request Phase):**
+    * 뷰가 호출되기 전에 각 미들웨어의 `process_request(request)` 또는 `__call__(request)` (새로운 스타일 미들웨어) 메서드가 순서대로 호출됩니다.
+    * 이 단계에서 미들웨어는 요청 객체를 수정하거나, 특정 조건에 따라 즉시 `HttpResponse`를 반환하여 뷰 처리를 중단시킬 수 있습니다. (예: 인증 미들웨어)
+
+* **뷰 처리 (View Processing):**
+    * 모든 요청 미들웨어를 통과하면 Django는 URLconf를 기반으로 적절한 뷰를 찾아 실행합니다.
+    * 뷰는 `HttpResponse` 객체를 반환합니다.
+
+* **응답 단계 (Response Phase):**
+    * 뷰가 응답을 반환하면, 미들웨어는 `MIDDLEWARE` 설정의 역순으로 `process_response(request, response)` 또는 `__call__` 내부의 응답 처리 로직이 호출됩니다.
+    * 이 단계에서 미들웨어는 응답 객체를 수정할 수 있습니다. (예: Content-Security-Policy 헤더 추가)
+
+* **예외 처리 단계 (Exception Phase):**
+    * 뷰 처리 중 예외가 발생하면, Django는 `MIDDLEWARE` 설정의 역순으로 각 미들웨어의 `process_exception(request, exception)` 메서드를 호출합니다.
+    * 이 메서드는 예외를 처리하고 새로운 `HttpResponse`를 반환하거나, 아무것도 반환하지 않아 다음 예외 처리 미들웨어로 넘길 수 있습니다.
+
+* **새로운 스타일 미들웨어 (Django 1.10+):**
+    * 클래스 기반 미들웨어는 `__init__`과 `__call__` 메서드를 가집니다. `__init__`은 서버 시작 시 한 번 호출되며, `__call__`은 각 요청마다 호출됩니다.
+```python
+class MyNewMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+        # 서버 시작 시 초기화 코드 (한 번 실행)
+
+    def __call__(self, request):
+        # 요청 처리 전 코드 (뷰 호출 전)
+        # 예: request.user = ...
+
+        response = self.get_response(request) # 다음 미들웨어나 뷰 호출
+
+        # 응답 처리 후 코드 (뷰 반환 후)
+        # 예: response['X-My-Header'] = 'value'
+
+        return response
+```
+
+### 주요 내장 미들웨어
+* `django.middleware.security.SecurityMiddleware`: 보안 관련 여러 설정을 처리합니다. (예: X-Content-Type-Options, X-XSS-Protection, Strict-Transport-Security 헤더 설정, `SECURE_SSL_REDIRECT` 등)
+* `django.contrib.sessions.middleware.SessionMiddleware`: 세션 관리를 활성화합니다.
+* `django.middleware.common.CommonMiddleware`: `APPEND_SLASH`, `PREPEND_WWW` 처리, Content-Length 헤더 설정 등 일반적인 웹 요청/응답 패턴을 처리합니다.
+* `django.middleware.csrf.CsrfViewMiddleware`: CSRF 공격 방어를 위한 토큰을 검증하고 생성합니다.
+* `django.contrib.auth.middleware.AuthenticationMiddleware`: `request` 객체에 `user` 속성을 추가하여 현재 로그인한 사용자를 나타냅니다.
+* `django.contrib.messages.middleware.MessageMiddleware`: 일회성 메시지(예: 성공, 오류 알림)를 처리합니다.
+
+### 커스텀 미들웨어 작성
+애플리케이션 전반에 걸쳐 적용하고 싶은 로직이 있다면 커스텀 미들웨어를 작성할 수 있습니다.
+
+**예시: 요청 처리 시간 측정 미들웨어**
+```python
+# myapp/middleware.py
+import time
+
+class TimingMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        start_time = time.time()
+        response = self.get_response(request)
+        duration = time.time() - start_time
+        response['X-Page-Generation-Duration-ms'] = str(int(duration * 1000))
+        print(f"Request to {request.path} took {duration:.4f} seconds")
+        return response
+
+# settings.py
+MIDDLEWARE = [
+    # ... 기존 미들웨어 ...
+    'myapp.middleware.TimingMiddleware', # 추가
+    # ... 기존 미들웨어 ...
+]
+```
+
+**미들웨어 훅 (선택적 메서드 - 구형 스타일):**
+* `process_view(request, view_func, view_args, view_kwargs)`: 뷰가 호출되기 직전에 호출됩니다. `None`을 반환하면 뷰 처리가 계속되고, `HttpResponse`를 반환하면 해당 응답이 사용됩니다.
+* `process_template_response(request, response)`: 뷰가 템플릿 렌더링을 포함하는 `TemplateResponse` (또는 유사 객체)를 반환했을 때 호출됩니다. `response.render()`가 호출되기 전에 응답을 변경할 수 있습니다.
+
+### 미들웨어 Best Practice
+* **순서의 중요성:** 미들웨어는 `MIDDLEWARE` 설정에 정의된 순서대로, 그리고 응답 시에는 역순으로 적용됩니다. 기능 간의 의존성을 고려하여 순서를 정해야 합니다.
+    * 예: `SessionMiddleware`는 `AuthenticationMiddleware`보다 먼저 와야 합니다. (`AuthenticationMiddleware`가 세션에 접근하기 때문)
+    * 예: `SecurityMiddleware`는 가능한 한 목록의 앞쪽에 두어 다른 미들웨어가 처리하기 전에 보안 헤더를 적용하는 것이 좋습니다.
+* **최소화:** 불필요한 미들웨어는 성능에 영향을 줄 수 있으므로, 꼭 필요한 미들웨어만 사용합니다.
+* **가볍게 유지:** 미들웨어는 모든 요청/응답에 대해 실행되므로, 각 미들웨어의 로직은 최대한 가볍고 빠르게 실행되어야 합니다. 무거운 작업은 비동기 작업으로 넘기는 것을 고려합니다.
+* **특정 경로에만 적용:** 모든 경로에 미들웨어를 적용할 필요가 없다면, 미들웨어 내부에서 `request.path`를 확인하여 특정 경로에만 로직이 실행되도록 조건부 처리를 할 수 있습니다.
+* **문서화:** 커스텀 미들웨어를 작성했다면, 그 기능과 설정 방법을 명확히 문서화합니다.
+
+## 3. 시그널 (Signals)
+시그널은 Django 애플리케이션의 특정 지점에서 발생하는 액션에 대해 다른 곳에서 알림을 받고 코드를 실행할 수 있도록 하는 디커플링(decoupling) 메커니즘입니다. 즉, 특정 이벤트가 발생했을 때(sender) 등록된 수신기(receiver) 함수들이 호출됩니다.
+
+### 시그널의 동작 원리
+1.  **시그널 정의 (Signal Definition):**
+    * Django는 여러 내장 시그널을 제공합니다. (예: 모델 저장 전/후, 요청 시작/종료 등)
+    * 필요에 따라 커스텀 시그널을 정의할 수도 있습니다.
+    ```python
+    from django.dispatch import Signal
+    my_signal = Signal() # 커스텀 시그널 정의
+    ```
+
+2.  **수신기 함수 작성 (Receiver Function):**
+    * 시그널이 발생했을 때 실행될 함수를 작성합니다. 이 함수는 `sender`와 시그널별 인자를 받을 수 있습니다.
+    ```python
+    def my_receiver_function(sender, **kwargs):
+        print(f"Signal received from {sender} with arguments: {kwargs}")
+        # ... 시그널 처리 로직 ...
+    ```
+
+3.  **시그널에 수신기 연결 (Connecting Receiver to Signal):**
+    * `Signal.connect()` 메서드를 사용하거나 `@receiver` 데코레이터를 사용하여 수신기 함수를 특정 시그널에 연결합니다.
+    ```python
+    from django.db.models.signals import post_save
+    from django.dispatch import receiver
+    from django.contrib.auth.models import User
+
+    # 방법 1: connect() 메서드 사용
+    def user_saved_receiver(sender, instance, created, **kwargs):
+        if created:
+            print(f"New user created: {instance.username}")
+        else:
+            print(f"User updated: {instance.username}")
+
+    post_save.connect(user_saved_receiver, sender=User)
+
+    # 방법 2: @receiver 데코레이터 사용
+    @receiver(post_save, sender=User)
+    def another_user_saved_receiver(sender, instance, created, **kwargs):
+        if created:
+            print(f"Another receiver: New user {instance.username} joined!")
+    ```
+
+4.  **시그널 발생 (Sending Signal):**
+    * 내장 시그널은 Django 프레임워크 내부에서 적절한 시점에 자동으로 발생합니다. (예: 모델 인스턴스가 저장될 때 `pre_save`, `post_save` 시그널 발생)
+    * 커스텀 시그널은 `Signal.send()` 또는 `Signal.send_robust()` 메서드를 사용하여 직접 발생시킬 수 있습니다.
+    ```python
+    # my_signal.send(sender=self.__class__, arg1='hello', arg2='world')
+    ```
+    * `send_robust()`: 수신기 함수에서 발생하는 예외를 무시하고 모든 수신기를 실행합니다.
+
+### 내장 시그널
+Django는 다양한 내장 시그널을 제공합니다. 주요 시그널은 다음과 같습니다.
+* **모델 시그널 (`django.db.models.signals`):**
+    * `pre_save` / `post_save`: 모델의 `save()` 메서드 호출 전/후에 발생합니다.
+    * `pre_delete` / `post_delete`: 모델의 `delete()` 메서드 호출 전/후에 발생합니다.
+    * `pre_init` / `post_init`: 모델의 `__init__()` 메서드 호출 전/후에 발생합니다.
+    * `m2m_changed`: `ManyToManyField`가 변경되었을 때 발생합니다.
+* **요청/응답 시그널 (`django.core.signals`):**
+    * `request_started` / `request_finished`: HTTP 요청 처리 시작/종료 시 발생합니다.
+    * `got_request_exception`: 요청 처리 중 예외 발생 시 발생합니다.
+* **템플릿 렌더링 시그널 (`django.test.signals`):**
+    * `template_rendered`: 테스트 중 템플릿이 렌더링될 때 발생합니다.
+* **데이터베이스 연결 시그널 (`django.db.backends.signals`):**
+    * `connection_created`: 데이터베이스 연결이 처음 생성될 때 발생합니다.
+
+### 커스텀 시그널 정의 및 사용
+애플리케이션 고유의 이벤트를 처리하기 위해 커스텀 시그널을 정의할 수 있습니다.
+```python
+# myapp/signals.py
+from django.dispatch import Signal
+
+# 주문 완료 시그널 정의
+# Django 4.0 부터 Signal 생성자에서 providing_args가 제거됨.
+# 이제는 send 메서드에서 인자를 자유롭게 전달.
+order_completed = Signal()
+
+# myapp/models.py (또는 로직이 있는 곳)
+# from .signals import order_completed
+#
+# class Order(models.Model):
+#     # ... 필드들 ...
+#     def complete_order(self):
+#         # ... 주문 완료 로직 ...
+#         print(f"Order {self.id} completed. Sending signal...")
+#         order_completed.send(sender=self.__class__, order_id=self.id, user=self.user)
+
+# myapp/receivers.py (또는 apps.py의 ready 메서드)
+# from django.dispatch import receiver
+# from .signals import order_completed
+#
+# @receiver(order_completed)
+# def send_order_confirmation_email(sender, order_id, user, **kwargs):
+#     print(f"Receiver: Sending confirmation email for order {order_id} to {user.email}")
+#     # ... 이메일 발송 로직 ...
+
+# myapp/apps.py
+from django.apps import AppConfig
+
+class MyappConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'myapp'
+
+    def ready(self):
+        import myapp.receivers # 시그널 수신기를 임포트하여 연결
+```
+**중요:** 시그널 수신기는 Django가 시작될 때 임포트되어야 합니다. 일반적으로 앱의 `apps.py` 파일 내 `AppConfig` 클래스의 `ready()` 메서드 안에서 수신기 모듈을 임포트합니다.
+
+### 시그널 Best Practice
+* **꼭 필요할 때만 사용:** 시그널은 코드를 분리하고 재사용성을 높이지만, 과도하게 사용하면 코드 흐름을 추적하기 어렵게 만들 수 있습니다. 명확한 비즈니스 로직은 모델 메서드나 서비스 계층에서 직접 처리하는 것이 더 나을 수 있습니다.
+* **수신기 함수는 가볍게:** 시그널 수신기는 동기적으로 실행되므로, 시간이 오래 걸리는 작업은 비동기 작업(예: Celery)으로 위임해야 합니다.
+* **`sender` 지정:** 가능하다면 `connect()` 메서드나 `@receiver` 데코레이터에서 `sender` 인자를 지정하여 특정 모델이나 클래스에서 발생하는 시그널에만 반응하도록 제한하는 것이 좋습니다. 이는 불필요한 수신기 호출을 줄여 성능에 도움이 됩니다.
+* **멱등성(Idempotency):** 수신기 함수는 여러 번 호출되어도 동일한 결과를 내도록 멱등성을 가지는 것이 좋습니다. (예: 객체가 이미 생성되었는지 확인)
+* **트랜잭션 주의:** `post_save` 시그널 핸들러 내에서 오류가 발생하면 트랜잭션이 롤백될 수 있습니다. 중요한 작업은 `transaction.on_commit()`을 사용하여 트랜잭션이 성공적으로 커밋된 후에 실행되도록 할 수 있습니다.
+```python
+from django.db import transaction
+
+@receiver(post_save, sender=MyModel)
+def my_handler(sender, instance, **kwargs):
+    def do_something_on_commit():
+        # 이 작업은 트랜잭션이 성공적으로 커밋된 후에 실행됩니다.
+        print(f"Transaction committed for {instance.id}")
+    transaction.on_commit(do_something_on_commit)
+```
+* **시그널 연결 위치:** 앱의 `apps.py` 내 `ready()` 메서드에서 시그널 수신기를 임포트하는 것이 권장됩니다. 이렇게 하면 앱이 로드될 때 시그널이 안정적으로 연결됩니다.
+* **문서화:** 어떤 시그널이 언제, 왜 사용되는지 명확히 문서화합니다.
+
+## 4. 캐싱 전략 (Caching Strategies)
+캐싱은 자주 사용되거나 생성 비용이 비싼 데이터를 임시 저장소에 저장해두고, 다음 요청 시 빠르게 접근할 수 있도록 하여 애플리케이션의 성능과 응답 속도를 향상시키는 중요한 기술입니다.
+
+### 캐싱의 중요성
+* **응답 시간 단축:** 데이터베이스 조회나 복잡한 연산 결과를 캐시에서 바로 가져오므로 사용자에게 더 빠른 응답을 제공할 수 있습니다.
+* **서버 부하 감소:** 데이터베이스나 다른 백엔드 시스템으로의 요청 수를 줄여 서버 자원 사용률을 낮춥니다.
+* **확장성 향상:** 서버 부하가 줄어들면 더 많은 동시 사용자를 처리할 수 있게 됩니다.
+
+### Django 캐시 프레임워크
+Django는 다양한 수준에서 캐싱을 적용할 수 있는 유연한 캐시 프레임워크를 제공합니다. `settings.py`의 `CACHES` 설정을 통해 캐시 백엔드와 옵션을 구성합니다.
+```python
+# settings.py
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache', # 예: Memcached 사용
+        'LOCATION': '127.0.0.1:11211',
+    },
+    'another_cache': { # 여러 캐시 설정 가능
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache', # 예: Redis 사용
+        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
+```
+
+### 캐싱 수준
+Django에서는 다음과 같은 다양한 수준에서 캐싱을 적용할 수 있습니다.
+* **템플릿 조각 캐싱 (Template Fragment Caching):**
+    * 템플릿의 특정 부분을 캐싱합니다. `{% load cache %}` 후 `{% cache <timeout_seconds> <cache_key_name> [optional_args...] %}` 태그를 사용합니다.
+    * 동적으로 변하는 부분이 적은 템플릿 조각에 유용합니다.
+    ```html
+    {% load cache %}
+    ...
+    {% cache 500 sidebar request.user.username %}
+        <p>안녕하세요, {{ user.username }}!</p>
+        <p>자주 변경되지 않는 사이드바 내용입니다.</p>
+    {% endcache %}
+    ...
+    ```
+
+* **뷰 캐싱 (View Caching):**
+    * 개별 뷰의 출력을 캐싱합니다. `@cache_page(timeout_seconds)` 데코레이터를 사용합니다.
+    * URL별로 캐싱되며, 동일한 URL 요청에 대해 캐시된 응답을 반환합니다.
+    ```python
+    from django.views.decorators.cache import cache_page
+
+    @cache_page(60 * 15) # 15분 동안 캐시
+    def my_view(request):
+        # ... 비용이 많이 드는 연산 ...
+        return HttpResponse(...)
+    ```
+    * URLconf에서 `cache_page`를 적용할 수도 있습니다.
+
+* **사이트 전체 캐싱 (Site-wide Caching):**
+    * `WorkspaceFromCacheMiddleware`와 `UpdateCacheMiddleware`를 `MIDDLEWARE` 설정의 처음과 끝에 추가하여 사이트 전체 페이지를 캐시할 수 있습니다.
+    * 정적인 사이트나 거의 변경되지 않는 콘텐츠에 적합하지만, 사용자별 콘텐츠가 있는 경우 주의해야 합니다.
+
+* **저수준 캐시 API (Low-level Cache API):**
+    * 가장 유연한 캐싱 방식으로, 코드 내에서 직접 캐시 객체에 접근하여 데이터를 저장하고 가져올 수 있습니다.
+    * `django.core.cache.cache` (또는 `caches['cache_name']`)를 사용합니다.
+    ```python
+    from django.core.cache import cache
+
+    def get_expensive_data():
+        cache_key = 'my_expensive_data'
+        data = cache.get(cache_key)
+        if data is None:
+            # 데이터가 캐시에 없으면 생성 (예: DB 조회, API 호출)
+            data = # ... 비싼 연산 ...
+            cache.set(cache_key, data, timeout=3600) # 1시간 동안 캐시
+        return data
+    ```
+    * 주요 메서드: `set(key, value, timeout)`, `get(key, default=None)`, `add(key, value, timeout)` (키가 없을 때만 추가), `delete(key)`, `clear()` 등.
+
+### 캐시 백엔드
+Django는 다양한 캐시 백엔드를 지원합니다.
+* **Memcached (`django.core.cache.backends.memcached`):** 가장 널리 사용되는 고성능 분산 메모리 캐시 시스템입니다. `PyMemcacheCache` 또는 `PyLibMCCache` 사용.
+* **Redis (`django.core.cache.backends.redis`):** 인메모리 데이터 구조 저장소로, 캐시뿐만 아니라 메시지 브로커, 세션 저장소 등 다양하게 활용됩니다. `django-redis` 라이브러리 필요.
+* **데이터베이스 캐싱 (`django.core.cache.backends.db.DatabaseCache`):** 데이터베이스 테이블을 캐시 저장소로 사용합니다. 설정은 간편하지만 성능은 다른 백엔드에 비해 떨어질 수 있습니다.
+* **파일 시스템 캐싱 (`django.core.cache.backends.filebased.FileBasedCache`):** 파일 시스템에 캐시 데이터를 저장합니다. 작은 사이트에 적합합니다.
+* **로컬 메모리 캐싱 (`django.core.cache.backends.locmem.LocMemCache`):** 파이썬 프로세스 메모리 내에 캐시합니다.
+```
