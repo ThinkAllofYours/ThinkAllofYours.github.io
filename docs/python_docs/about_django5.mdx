@@ -89,10 +89,30 @@ myproject/
 Shell을 실행할 때 명시적으로 DJANGO_SETTINGS_MODULE 환경 변수를 설정해주어야 해당 환경의 설정이 적용
 
 
-### URL 설계되었습니
+### URL 설계되었습니다
 
 Django는 아름다운 URL 설계를 장려하며 URL에 .php 나 .asp 같은 불필요한 내용들을 넣지 않습니다.
 (JAVA 공화국인 대한민국에서는 .do 와 같은 것들을 자주 볼 수 있습니다)
 
+### 장고의 manage.py shell 명령어
 
+- 장고의 manage.py shell 명령어는 Django 프로젝트의 환경을 자동으로 로드한 뒤, 파이썬 인터프리터(기본적으로는 IPython, bpython, 또는 표준 Python shell)를 실행하는 구조입니다. 이 구조를 이해하면, 단순한 파이썬 shell과 달리 Django의 설정, 데이터베이스, 앱 모델 등을 바로 사용할 수 있다는 점이 핵심입니다.
 
+#### manage.py
+- Django 프로젝트의 루트에 위치한 실행 스크립트입니다.
+- 내부적으로 os.environ['DJANGO_SETTINGS_MODULE']을 설정하여 어떤 설정 파일을 사용할지 지정합니다.
+- from django.core.management import execute_from_command_line를 통해 명령어를 실행합니다.
+
+#### shell 명령 실행
+- python manage.py shell을 입력하면, Django의 management command 시스템이 동작합니다.
+- django.core.management.commands.shell.Command 클래스가 실행됩니다.
+- 이 클래스는 Django 환경(설정, DB 연결, 앱 로딩 등)을 모두 초기화한 뒤, shell을 실행합니다.
+- IPython, bpython, ptpython 등 고급 shell이 설치되어 있으면 우선적으로 실행하고, 없으면 기본 파이썬 shell을 실행합니다.
+
+#### Django 환경 자동 로드
+- settings.py(혹은 환경에 따라 base.py, development.py 등)에서 설정을 읽어옵니다.
+- DJANGO_SETTINGS_MODULE 환경변수로 어떤 설정을 쓸지 결정합니다.
+- 모델, ORM, DB 연결 등 모든 Django 기능을 바로 사용할 수 있습니다.
+
+#### 스크립트 실행
+- python manage.py shell < my_script.py처럼 파이썬 스크립트를 입력으로 넘기면, Django 환경에서 해당 스크립트가 순차적으로 실행됩니다
