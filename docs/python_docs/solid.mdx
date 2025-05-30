@@ -1,0 +1,87 @@
+---
+slug: solid with python
+title: 📚 python에서 SOLID 원칙 적용하기
+authors: [bundabergman]
+tags: [python, solid]
+---
+
+## Python에서 적용할 수 있는 SOLID 원칙
+
+SOLID 원칙은 객체 지향 설계의 다섯 가지 기본 원칙을 나타내는 약자
+
+1. Single Responsibility Principle (SRP)
+- 단일 책임 원칙으로 "클래스는 단 하나의 책임만 가져야 한다."
+
+2. Open/Closed Principle (OCP)
+- 소프트웨어 구성요소는 확장에는 열려 있어야 하고, 변경에는 닫혀 있어야 한다.
+
+3. Liskov Substitution Principle (LSP)
+- 파생 클래스는 기반 클래스를 대체할 수 있어야 한다.
+
+4. Interface Segregation Principle (ISP)
+- 클라이언트는 자신이 사용하지 않는 인터페이스에 의존하도록 강요되어서는 안 된다.
+
+5. Dependency Inversion Principle (DIP)
+- 상위 수준 모듈은 하위 수준 모듈에 의존해서는 안 된다.
+
+## 1. Single Responsibility Principle (SRP)
+
+- 단일 책임 원칙으로 "클래스는 단 하나의 책임만 가져야 한다."
+
+- 예시
+```python
+# SRP 위반 예시
+class User:
+    def __init__(self, name, email):
+        self.name = name
+        self.email = email
+
+    def get_user_info(self):
+        return f"Name: {self.name}, Email: {self.email}"
+
+    def save_user_to_database(self):
+        # 데이터베이스에 사용자 정보 저장 로직
+        print(f"{self.name} 정보를 데이터베이스에 저장했습니다.")
+
+    def send_email_to_user(self):
+        # 사용자에게 이메일 발송 로직
+        print(f"{self.email}로 이메일을 발송했습니다.")
+
+# User 클래스는 사용자 정보 관리, 데이터베이스 저장, 이메일 발송이라는 세 가지 책임을 가지고 있습니다.
+```
+
+- 해결 방법
+```python
+# SRP 준수 예시
+class User:
+    def __init__(self, name, email):
+        self.name = name
+        self.email = email
+
+    def get_user_info(self):
+        return f"Name: {self.name}, Email: {self.email}"
+
+class UserRepository:
+    def save(self, user):
+        # 데이터베이스에 사용자 정보 저장 로직
+        print(f"{user.name} 정보를 데이터베이스에 저장했습니다.")
+
+class EmailService:
+    def send_email(self, user, message):
+        # 사용자에게 이메일 발송 로직
+        print(f"{user.email}로 '{message}' 메시지를 발송했습니다.")
+
+# 각 클래스가 하나의 책임만 가집니다.
+user = User("Alice", "alice@example.com")
+user_repo = UserRepository()
+email_service = EmailService()
+
+print(user.get_user_info())
+user_repo.save(user)
+email_service.send_email(user, "환영합니다!")
+```
+
+- 설명
+-- `User` 클래스는 사용자 정보만 관리합니다.
+-- `UserRepository` 클래스는 사용자 정보를 데이터베이스에 저장하는 책임만 가집니다.
+-- `EmailService` 클래스는 사용자에게 이메일을 발송하는 책임만 가집니다.
