@@ -85,3 +85,38 @@ email_service.send_email(user, "환영합니다!")
 -- `User` 클래스는 사용자 정보만 관리합니다.
 -- `UserRepository` 클래스는 사용자 정보를 데이터베이스에 저장하는 책임만 가집니다.
 -- `EmailService` 클래스는 사용자에게 이메일을 발송하는 책임만 가집니다.
+
+## 2. Open/Closed Principle (OCP)
+
+- 소프트웨어 구성요소(클래스, 모듈, 함수 등)는 확장에는 열려 있어야 하고, 변경에는 닫혀 있어야 한다. 
+- 기존 코드를 수정하지 않고도 기능을 추가할 수 있어야 한다는 의미. 주로 추상화와 다형성을 통해 구현됨
+
+```python
+# OCP 위반 예시
+class Discount:
+    def __init__(self, customer, price):
+        self.customer = customer
+        self.price = price
+
+    def get_discount(self):
+        if self.customer == "favorite":
+            return self.price * 0.2
+        elif self.customer == "vip":
+            return self.price * 0.4
+        else:
+            return self.price
+
+# 새로운 할인 방법이 추가되면 기존 코드를 수정해야 함
+```
+
+- python에서는 추상화를 하려면 ABC 클래스와 abstractmethod를 사용해야 함
+
+```python
+from abc import ABC, abstractmethod
+
+class Discount(ABC):
+    @abstractmethod
+    def apply_discount(self, price):
+        pass
+
+```
