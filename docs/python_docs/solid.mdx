@@ -119,4 +119,52 @@ class Discount(ABC):
     def apply_discount(self, price):
         pass
 
+class FavoriteDiscount(Discount):
+    def apply_discount(self, price):
+        return price * 0.2
+
+class VIPDiscount(Discount):
+    def apply_discount(self, price):
+        return price * 0.4
+
+class NormalDiscount(Discount):
+    def apply_discount(self, price):
+        return price
+
+class DiscountCalculator:
+    def __init__(self, discount: Discount):
+        self.discount = discount
+
+    def calculate_discount(self, price):
+        return self.discount.apply_discount(price)
+
+price = 100
+favorite_discount = DiscountCalculator(FavoriteDiscount())
+vip_discount = DiscountCalculator(VIPDiscount())
+normal_discount = DiscountCalculator(NormalDiscount())
+
+print(favorite_discount.calculate_discount(price))
+print(vip_discount.calculate_discount(price))
+print(normal_discount.calculate_discount(price))
+```
+
+- 이 상태에서 새로운 할인 방법이 추가되면 기존 코드를 수정하지 않고도 새로운 할인 방법을 추가할 수 있음
+
+```python
+class NewDiscount(Discount):
+    def apply_discount(self, price):
+        return price * 0.9
+
+new_discount = DiscountCalculator(NewDiscount())
+print(new_discount.calculate_discount(price))
+```
+
+
+
+
+
+
+
+
+
 ```
