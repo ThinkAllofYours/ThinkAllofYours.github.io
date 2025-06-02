@@ -159,12 +159,84 @@ new_discount = DiscountCalculator(NewDiscount())
 print(new_discount.calculate_discount(price))
 ```
 
+## 3. Liskov Substitution Principle (LSP)
+
+- 파생 클래스는 기반 클래스를 대체할 수 있어야 한다.
+- 자식 클래스는 부모 클래스를 항상 대체할 수 있어야 한다.
+
+```python
+# LSP 위반 예시
+class Bird:
+    def fly(self):
+        print("Bird is flying")
+
+class Penguin(Bird):
+    def fly(self):
+        raise NotImplementedError("Penguins cannot fly")
+
+def make_bird_fly(bird: Bird):
+    bird.fly()
+
+bird = Bird()
+penguin = Penguin()
+
+make_bird_fly(bird)
+try:
+    make_bird_fly(penguin)
+except NotImplementedError:
+    print("Penguins cannot fly")
 
 
-
-
-
-
-
-
+# 이 경우 Penguin은 Bird의 하위 타입으로 적절하지 않을 수 있습니다.
+# make_bird_fly 함수는 Bird 타입의 객체가 fly() 메서드를 문제없이 호출할 수 있다고 가정합니다.
 ```
+
+- LSP를 만족시키려면 상속 관계를 신중하게 설계해야 합니다.
+- 모든 새가 날 수 있는건 아닙니다. (예를들어 펭귄이나 타조는 날 수 없습니다)
+
+```python
+from abc import ABC, abstractmethod
+
+class Bird(ABC):
+    @abstractmethod
+    def lay_egg(self):
+        pass
+
+class FlyingBird(Bird):
+    def fly(self):
+        print("Flying bird is flying")
+
+    def lay_egg(self):
+        print("Flying bird is laying egg")
+
+class NonFlyingBird(Bird):
+    def lay_egg(self):
+        print("Non-flying bird is laying egg")
+
+class Penguin(NonFlyingBird):
+    pass
+
+class Sparrow(FlyingBird):
+    pass
+
+def let_bird_fly(bird: FlyingBird):
+    bird.fly()
+
+def let_bird_lay_egg(bird: Bird):
+    bird.lay_egg()
+
+sparrow = Sparrow()
+penguin = Penguin()
+
+let_bird_fly(sparrow)
+let_bird_lay_egg(sparrow)
+
+let_bird_fly(penguin)
+let_bird_lay_egg(penguin)
+```
+
+- 모든 새가 할 수 있는 공통적인 특징으로는 알을 낳는 것입니다. 
+- 어떤 새는 날 수 있고 어떤 새는 날 수 없습니다. 
+- 하지만 알을 낳는 행위하는 모든 새에서 공통적인 행위임으로 추상 클래스인 Bird를 인수로 받아서 처리합니다.
+- 날 수 있는 새와 날 수 없는 새는 같은 새 종류이지만 구분되어 행동 되어야 합니다. 
+
