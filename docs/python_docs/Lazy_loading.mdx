@@ -1,0 +1,107 @@
+---
+slug: why-use-string-reference-in-django-models
+title: 📚 Django 모델, 왜 클래스 대신 문자열을 사용할까요?
+authors: [bundabergman]
+tags: [python, django, lazy loading, circular import]
+---
+
+## Django 모델 참조 방법
+
+Django에서 `ForeignKey` 선언 시 두 가지 방법 존재:
+
+```python title="두 가지 방법"
+from django.db import models
+from users.models import User # 방법 1: 직접 임포트
+
+# 방법 1: 모델 클래스 직접 사용
+user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+# 방법 2: 모델 이름을 문자열로 사용
+user = models.ForeignKey("users.User", on_delete=models.CASCADE)
+```
+
+## 권장 방법: 문자열 참조
+
+- **Django 공식 문서 권장**: 문자열 사용 방식
+- **핵심 이유**: 순환 참조(Circular Import) 문제 해결
+- **핵심 기술**: 지연 로딩(Lazy Loading) 활용
+
+## 🔥 문제 상황: 순환 참조
+
+### 발생 원인
+- 두 개 이상의 모듈이 서로를 임포트할 때 발생
+- 파이썬이 모듈 로딩 순서를 결정하지 못함
+- 결과: `ImportError` 발생
+
+### 실제 예시
+```python title="orders/models.py"
+from django.db import models
+from users.models import User # User 모델 임포트
+
+class Order(models.Model):
+    product_name = models.CharField(max_length=100)
+    user = models.ForeignKey(User, on_delete=models.CASCADE) # 여기서 User 모델을 임포트하려고 함
+```
+
+```python title="users/models.py"
+from django.db import models
+from orders.models import Order # 💥 순환 참조 발생!
+
+class User(models.Model):
+    username = models.CharField(max_length=100)
+    last_order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True) # 여기서 Order 모델을 임포트하려고 함
+```
+
+## ✨ 해결책: 지연 로딩 (Lazy Loading)과 문자열 참조
+
+이 복잡한 순환 참조 문제를 해결하는 열쇠가 바로 **모델 이름을 문자열로 참조**하는 것.
+
+```python title="orders/models.py (수정)"
+from django.db import models
+# 더 이상 User 모델을 직접 임포트할 필요가 없다.
+
+class Order(models.Model):
+    product_name = models.CharField(max_length=100)
+    order_date = models.DateTimeField(auto_now_add=True)
+    # "앱이름.모델이름" 형식의 문자열 사용
+    user = models.ForeignKey("users.User", on_delete=models.CASCADE)
+```
+
+```python title="users/models.py (수정)"
+from django.db import models
+# 더 이상 Order 모델을 직접 임포트할 필요가 없다.
+
+class User(models.Model):
+    username = models.CharField(max_length=100)
+    # 문자열로 참조하면 순환 참조 문제가 발생하지 않는다.
+    last_order = models.ForeignKey(
+        "orders.Order",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+```
+
+**어떻게 이게 가능할까**
+
+Django는 `ForeignKey`에 문자열이 전달되면, 파이썬이 코드를 읽는 시점에 해당 모델을 즉시 찾지 않는다.
+
+대신 **"나중에 'users.User'라는 모델을 찾아서 연결해야지"** 라고 약속만 기록해 둔다.
+
+그리고 Django 프로젝트의 모든 앱과 모델이 메모리에 완전히 로딩된 후에, 이 약속들을 하나씩 실행하며 실제 모델 클래스와 관계를 맺어준다. 
+
+모든 모델이 준비된 상태에서 연결하므로 순환 참조 문제가 원천적으로 발생
+
+\<Admonition type="tip" title="모범 사례 (Best Practice)"\>
+\<p\>
+순환 참조 문제가 당장 보이지 않더라도, 모델 관계(\<code\>ForeignKey\</code\>, \<code\>ManyToManyField\</code\>, \<code\>OneToOneField\</code\>)를 정의할 때는 \<strong\>항상 문자열 참조 방식을 사용하는 것이 좋다
+\</p\>
+\</Admonition\>
+
+## 정리하며
+
+오늘은 Django에서 모델 관계를 정의할 때 왜 클래스보다 문자열을 사용해야 하는지 알아보았다.
+
+  - **순환 참조**는 두 모듈이 서로를 필요로 할 때 발생하는 `ImportError`입니다.
+  - **문자열 참조**는 Django가 모든 모델을 로딩한 후에 관계를 설정하는 **지연 로딩** 방식으로 이 문제를 해결한다.
+  - 미래의 버그를 예방하고 안정적인 코드를 위해 항상 **문자열 참조를 사용하는 것을 습관**화합시다.
